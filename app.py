@@ -39,11 +39,13 @@ SECRET_FILE = BASE / ".secret_key"
 app = Flask(__name__)
 
 
-if SECRET_FILE.exists():
+SECRET_KEY = os.environ.get("SECRET_KEY")
+
+if not SECRET_KEY and SECRET_FILE.exists():
     SECRET_KEY = SECRET_FILE.read_text().strip()
-else:
+
+if not SECRET_KEY:
     SECRET_KEY = os.urandom(32).hex()
-    SECRET_FILE.write_text(SECRET_KEY)
 
 app.secret_key = SECRET_KEY
 

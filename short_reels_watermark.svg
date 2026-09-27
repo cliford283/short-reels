@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="110" viewBox="0 0 420 110">
+  <rect width="420" height="110" fill="none"/>
+
+  <rect x="0" y="8" width="7" height="94" fill="#c8102e"/>
+
+  <text x="28" y="39"
+        fill="#ffffff"
+        font-family="Arial, sans-serif"
+        font-size="24"
+        font-weight="600"
+        letter-spacing="6">SHORT</text>
+
+  <text x="28" y="83"
+        fill="#ffffff"
+        font-family="Arial, sans-serif"
+        font-size="48"
+        font-weight="700"
+        letter-spacing="2">REELS</text>
+
+  <rect x="28" y="94" width="52" height="4" fill="#c8102e"/>
+</svg>

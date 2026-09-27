@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SHORT REELS — Admin Login</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#090909;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    padding:20px;
+}
+
+.login{
+    width:100%;
+    max-width:420px;
+    background:#151515;
+    border:1px solid #292929;
+    border-radius:20px;
+    padding:32px 25px;
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:28px;
+}
+
+.logo-mark{
+    width:58px;
+    height:58px;
+    margin:0 auto 12px;
+    border-radius:16px;
+    background:#fff;
+    position:relative;
+}
+
+.logo-mark:after{
+    content:"";
+    position:absolute;
+    left:22px;
+    top:16px;
+    border-left:19px solid #000;
+    border-top:13px solid transparent;
+    border-bottom:13px solid transparent;
+}
+
+.logo h1{
+    margin:0;
+    font-size:25px;
+    letter-spacing:2px;
+}
+
+.logo p{
+    color:#888;
+    margin:7px 0 0;
+    font-size:13px;
+}
+
+label{
+    display:block;
+    color:#aaa;
+    font-size:13px;
+    margin:0 0 8px;
+}
+
+input{
+    width:100%;
+    height:50px;
+    border:1px solid #333;
+    border-radius:10px;
+    background:#0d0d0d;
+    color:#fff;
+    padding:0 14px;
+    font-size:15px;
+    outline:none;
+    margin-bottom:18px;
+}
+
+input:focus{
+    border-color:#777;
+}
+
+button{
+    width:100%;
+    height:50px;
+    border:0;
+    border-radius:10px;
+    background:#fff;
+    color:#000;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+}
+
+button:disabled{
+    opacity:.6;
+}
+
+.error{
+    display:none;
+    margin-bottom:16px;
+    padding:12px;
+    border-radius:9px;
+    background:#321313;
+    border:1px solid #632525;
+    color:#ff9b9b;
+    font-size:13px;
+}
+
+.footer{
+    text-align:center;
+    color:#555;
+    font-size:11px;
+    margin-top:24px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login">
+
+    <div class="logo">
+        <div class="logo-mark"></div>
+        <h1>SHORT REELS</h1>
+        <p>Administrator Portal</p>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <form id="loginForm">
+
+        <label for="identity">Username or Email</label>
+        <input
+            id="identity"
+            type="text"
+            autocomplete="username"
+            placeholder="Enter username or email"
+            required
+        >
+
+        <label for="password">Password</label>
+        <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Enter password"
+            required
+        >
+
+        <button id="loginButton" type="submit">
+            Sign In
+        </button>
+
+    </form>
+
+    <div class="footer">
+        SHORT REELS Administration
+    </div>
+
+</div>
+
+<script>
+const form = document.getElementById("loginForm");
+const errorBox = document.getElementById("error");
+const button = document.getElementById("loginButton");
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    errorBox.style.display = "none";
+    button.disabled = true;
+    button.textContent = "Signing in...";
+
+    try {
+        const response = await fetch("/api/admin/login", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                identity: document.getElementById("identity").value,
+                password: document.getElementById("password").value
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Login failed");
+        }
+
+        window.location.href = data.redirect || "/admin/dashboard";
+
+    } catch (error) {
+        errorBox.textContent = error.message;
+        errorBox.style.display = "block";
+
+        button.disabled = false;
+        button.textContent = "Sign In";
+    }
+});
+</script>
+
+</body>
+</html>

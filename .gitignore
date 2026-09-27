@@ -1,0 +1,88 @@
+# Environment / secrets
+.env
+.secret_key
+admin_config.json
+
+# Runtime / generated data
+data/
+uploads/
+__pycache__/
+*.pyc
+
+# Local backups
+*.backup
+*.before-*
+*.final-backup
+*.release-backup
+
+# Local test media
+watermark-test*.mp4
+watermark-test*.png
+
+# Android / Gradle
+*.iml
+.gradle/
+.kotlin/
+local.properties
+/.idea/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# OS files
+.DS_Store
+
+# Large video/media files
+videos/
+*.mp4
+*.mov
+*.mkv
+*.webm
+
+# Deployment archives
+*.zip
+
+# Node dependencies
+node_modules/
+
+# Android application source
+app/
+gradlew
+gradlew.bat
+settings.gradle
+settings.gradle.kts
+build.gradle
+build.gradle.kts
+gradle.properties
+gradle/
+
+# Temporary / development files
+.syntax-check.js
+*.before_*
+production.py
+
+# Android application source
+app/
+gradlew
+gradlew.bat
+settings.gradle
+settings.gradle.kts
+build.gradle
+build.gradle.kts
+gradle.properties
+gradle/
+
+# Temporary / development files
+.syntax-check.js
+*.before_*
+production.py
+
+# Unneeded web build files
+html
+package-lock.json
+
+# Secrets
+.secret_key
+admin_config.json
+*.backup

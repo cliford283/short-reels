@@ -1,0 +1,7 @@
+{
+  "name": "Short Drama",
+  "description": "Short Drama streaming platform with trending series, vertical reel feed, episode player, and private admin dashboard for user management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

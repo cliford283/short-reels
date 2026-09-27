@@ -26,14 +26,10 @@ UPLOAD_DIR = BASE / "uploads"
 COVERS_DIR = UPLOAD_DIR / "covers"
 VIDEOS_DIR = UPLOAD_DIR / "videos"
 
-CATALOG_FILE = DATA_DIR / "catalog.json"
+CATALOG_FILE = BASE / "catalog.json"
 ADMIN_FILE = BASE / "admin_config.json"
 SECRET_FILE = BASE / ".secret_key"
 
-DATA_DIR.mkdir(exist_ok=True)
-UPLOAD_DIR.mkdir(exist_ok=True)
-COVERS_DIR.mkdir(exist_ok=True)
-VIDEOS_DIR.mkdir(exist_ok=True)
 
 
 # =========================================================

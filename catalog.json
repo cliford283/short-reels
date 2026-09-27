@@ -1,0 +1,995 @@
+{
+  "dramas": [
+    {
+      "id": "zunka",
+      "title": "ZUNKA",
+      "description": "ZUNKA",
+      "cover": "/uploads/covers/4e0df0e5307049e9882f4377761f91d6.png",
+      "category": "NEW",
+      "tags": [
+        "ZUNKA"
+      ],
+      "placements": [],
+      "published": true,
+      "episodes": 1,
+      "created_at": "2026-09-21T18:15:36",
+      "updated_at": "2026-09-21T18:15:36"
+    },
+    {
+      "id": "the_200_ghost_fighter",
+      "title": "THE $200 GHOST FIGHTER",
+      "description": "",
+      "cover": "/uploads/covers/aa928ccbbcce4746bf4702a546ed49a6.jpg",
+      "category": "NEW",
+      "tags": [
+        "NEW"
+      ],
+      "placements": [],
+      "published": true,
+      "episodes": 30,
+      "created_at": "2026-09-23T14:24:05",
+      "updated_at": "2026-09-23T14:24:05"
+    },
+    {
+      "id": "the_nbound_rise_of_god_slayer",
+      "title": "The unbound rise of god slayer",
+      "description": "",
+      "cover": "/uploads/covers/5d2ab096dc96400697ec23a1b8012639.jpg",
+      "category": "NEW",
+      "tags": [
+        "THE UNBOUND RISE OF GOD SLAYER"
+      ],
+      "placements": [],
+      "published": true,
+      "episodes": 9,
+      "created_at": "2026-09-24T07:28:09",
+      "updated_at": "2026-09-24T07:45:21"
+    }
+  ],
+  "episodes": [
+    {
+      "id": "398fe20d1ac84420b14beb8f97493360",
+      "drama_id": "zunka",
+      "number": 1,
+      "title": "1",
+      "video": "/uploads/videos/ep_1_5cf7ce98c6.mp4",
+      "created_at": "2026-09-21T18:47:47",
+      "updated_at": "2026-09-21T18:54:13"
+    },
+    {
+      "id": "b8d1475eaf7845019350bbfb4437915c",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 1,
+      "title": "EPISODE 1",
+      "video": "/uploads/videos/ep_1_c25784497a.mp4",
+      "created_at": "2026-09-23T14:25:44",
+      "updated_at": "2026-09-23T14:25:44"
+    },
+    {
+      "id": "9464cd97970a40a1a6f80a56546e57c8",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 2,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_2_a2101b3c2b.mp4",
+      "created_at": "2026-09-23T14:28:20",
+      "updated_at": "2026-09-23T14:28:20"
+    },
+    {
+      "id": "25719003d3e1439985ec8b039ca466e4",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 3,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_3_df910e7bd9.mp4",
+      "created_at": "2026-09-23T14:29:02",
+      "updated_at": "2026-09-23T14:29:02"
+    },
+    {
+      "id": "ef6a954f8ec949fda830602857a7c2d3",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 4,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_4_2b39e90505.mp4",
+      "created_at": "2026-09-23T14:29:26",
+      "updated_at": "2026-09-23T14:29:26"
+    },
+    {
+      "id": "e181a3b07f394ae69855f58a679fb5dc",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 5,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_5_3f449bc0e1.mp4",
+      "created_at": "2026-09-23T14:29:50",
+      "updated_at": "2026-09-23T14:29:50"
+    },
+    {
+      "id": "80a51ac9e35a486cb2fcfb6ca3975a39",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 6,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_6_2871722c55.mp4",
+      "created_at": "2026-09-23T14:30:36",
+      "updated_at": "2026-09-23T14:30:36"
+    },
+    {
+      "id": "2f6055211b4c455ab7ba3aed1e190ffa",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 7,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_7_c6523e08f1.mp4",
+      "created_at": "2026-09-23T14:31:17",
+      "updated_at": "2026-09-23T14:31:17"
+    },
+    {
+      "id": "5a99dbe9c93a49019d320123c314622b",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 8,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_8_fca3d8d305.mp4",
+      "created_at": "2026-09-23T17:35:37",
+      "updated_at": "2026-09-23T17:35:37"
+    },
+    {
+      "id": "0cdf4d2cdecf4e6b9fa2638fa18497c1",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 9,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_9_8056825576.mp4",
+      "created_at": "2026-09-23T17:35:56",
+      "updated_at": "2026-09-23T17:35:56"
+    },
+    {
+      "id": "04d7eeac833b4cccb455a2c85c9755c9",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 10,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_10_939df02600.mp4",
+      "created_at": "2026-09-23T17:36:40",
+      "updated_at": "2026-09-23T17:36:40"
+    },
+    {
+      "id": "517a83da36984fd195448601adbda4ee",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 11,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_11_869a8c14e9.mp4",
+      "created_at": "2026-09-23T17:37:05",
+      "updated_at": "2026-09-23T17:37:05"
+    },
+    {
+      "id": "328a2abac17c4962a6ee9ac307eba8b6",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 12,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_12_90d40fb12f.mp4",
+      "created_at": "2026-09-23T17:37:23",
+      "updated_at": "2026-09-23T17:39:44"
+    },
+    {
+      "id": "a0d13eefac0e42cfb927c7ce656151e2",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 13,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_13_b25c60521c.mp4",
+      "created_at": "2026-09-23T17:37:55",
+      "updated_at": "2026-09-23T17:37:55"
+    },
+    {
+      "id": "19f67924462b4f399608e2f3088d64dc",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 14,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_14_4fe45955c1.mp4",
+      "created_at": "2026-09-23T17:38:26",
+      "updated_at": "2026-09-23T17:38:26"
+    },
+    {
+      "id": "d2403c232a974bb5b9060d276c29933d",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 15,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_15_c0c1a5e49c.mp4",
+      "created_at": "2026-09-23T17:40:32",
+      "updated_at": "2026-09-23T17:40:32"
+    },
+    {
+      "id": "bfd8b59b11cb4c5a9fa49ab1c1f3d1e6",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 16,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_16_8c879d2ae2.mp4",
+      "created_at": "2026-09-23T17:41:02",
+      "updated_at": "2026-09-23T17:41:02"
+    },
+    {
+      "id": "74a2751c73bd405b888cd4a375646cde",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 17,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_17_fc0e2f4411.mp4",
+      "created_at": "2026-09-23T17:58:07",
+      "updated_at": "2026-09-23T18:10:45"
+    },
+    {
+      "id": "3d547b452b7b411cbc80ebf3f25e6af0",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 18,
+      "title": "Episode 18",
+      "video": "/uploads/videos/ep_18_e2b6c02218.mp4",
+      "created_at": "2026-09-23T17:58:23",
+      "updated_at": "2026-09-23T17:59:20"
+    },
+    {
+      "id": "88863c4aa18346a386e69daf25a5f81d",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 19,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_19_904cf0ad2e.mp4",
+      "created_at": "2026-09-23T17:59:48",
+      "updated_at": "2026-09-23T17:59:48"
+    },
+    {
+      "id": "87fe0ca997c042789e5e05535332a7db",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 20,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_20_e463b9d800.mp4",
+      "created_at": "2026-09-23T18:00:41",
+      "updated_at": "2026-09-23T18:00:41"
+    },
+    {
+      "id": "386f4a4f349c485fae67064ca5d8d11e",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 21,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_21_a13e77c554.mp4",
+      "created_at": "2026-09-23T18:01:04",
+      "updated_at": "2026-09-23T18:01:04"
+    },
+    {
+      "id": "5ed652845bed49e38a35423a109030c7",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 22,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_22_439b8c4dc1.mp4",
+      "created_at": "2026-09-23T18:01:30",
+      "updated_at": "2026-09-23T18:01:30"
+    },
+    {
+      "id": "506a2512b224463fb76fabebfaa3d7c5",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 23,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_23_c579a29b2d.mp4",
+      "created_at": "2026-09-23T18:01:52",
+      "updated_at": "2026-09-23T18:01:52"
+    },
+    {
+      "id": "b158646e68a2496b9f6a377253b7b1cb",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 24,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_24_e399f9b99a.mp4",
+      "created_at": "2026-09-23T18:02:39",
+      "updated_at": "2026-09-23T18:02:39"
+    },
+    {
+      "id": "d2d56e3579c34dca94f10bafd87397af",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 25,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_25_27252be303.mp4",
+      "created_at": "2026-09-23T18:04:20",
+      "updated_at": "2026-09-23T18:04:20"
+    },
+    {
+      "id": "778e812569fd497395a52f7450088677",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 26,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_26_ba73f1026e.mp4",
+      "created_at": "2026-09-23T18:04:48",
+      "updated_at": "2026-09-23T18:04:48"
+    },
+    {
+      "id": "98fc4f7781c14a51b9681fd764487b4a",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 27,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_27_2afce97f5a.mp4",
+      "created_at": "2026-09-23T18:05:19",
+      "updated_at": "2026-09-23T18:13:26"
+    },
+    {
+      "id": "fa516690b8334f98922a0232308461b3",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 28,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_28_c8b9cb0c8a.mp4",
+      "created_at": "2026-09-23T18:05:53",
+      "updated_at": "2026-09-23T18:05:53"
+    },
+    {
+      "id": "e006234b96504b8f9523e25f1bd2a585",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 29,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_29_77f5d04352.mp4",
+      "created_at": "2026-09-23T18:06:21",
+      "updated_at": "2026-09-23T18:06:21"
+    },
+    {
+      "id": "d036718d171c4917b5026b092323bfe8",
+      "drama_id": "the_200_ghost_fighter",
+      "number": 30,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_30_c22f3556ef.mp4",
+      "created_at": "2026-09-23T18:07:00",
+      "updated_at": "2026-09-23T18:07:00"
+    },
+    {
+      "id": "30172d3afa00462a8ec98fefc7c25f5a",
+      "drama_id": "the_nbound_rise_of_god_slayer",
+      "number": 1,
+      "title": "Episode 1",
+      "video": "/uploads/videos/ep_1_97f37de301.mp4",
+      "created_at": "2026-09-24T07:29:25",
+      "updated_at": "2026-09-24T07:29:25"
+    },
+    {
+      "id": "16212fcc28b341819e22b348315d44db",
+      "drama_id": "the_nbound_rise_of_god_slayer",
+      "number": 2,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_2_bc93ea88a8.mp4",
+      "created_at": "2026-09-24T07:29:53",
+      "updated_at": "2026-09-24T07:29:53"
+    },
+    {
+      "id": "df9deacb3b8048c6a821d903d9a4038e",
+      "drama_id": "the_nbound_rise_of_god_slayer",
+      "number": 3,
+      "title": "THE Unbound rise of god slayer",
+      "video": "/uploads/videos/ep_3_970bc674bc.mp4",
+      "created_at": "2026-09-24T07:30:19",
+      "updated_at": "2026-09-24T07:30:19"
+    },
+    {
+      "id": "33d5222bb8f94eb8b4b402a182d15617",
+      "drama_id": "the_nbound_rise_of_god_slayer",
+      "number": 4,
+      "title": "THE Unbound rise of god slayer",
+      "video": "/uploads/videos/ep_4_7cb9a10b65.mp4",
+      "created_at": "2026-09-24T07:43:40",
+      "updated_at": "2026-09-24T07:43:40"
+    },
+    {
+      "id": "443dc930be9b49c6b278262c4baa3989",
+      "drama_id": "the_nbound_rise_of_god_slayer",
+      "number": 5,
+      "title": "THE Unbound rise of god slayer",
+      "video": "/uploads/videos/ep_5_c472eb2f75.mp4",
+      "created_at": "2026-09-24T07:44:06",
+      "updated_at": "2026-09-24T07:44:06"
+    },
+    {
+      "id": "6557f5e6b90b42d3af6e184107077677",
+      "drama_id": "the_nbound_rise_of_god_slayer",
+      "number": 6,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_6_efd9ab3095.mp4",
+      "created_at": "2026-09-24T07:58:27",
+      "updated_at": "2026-09-24T07:58:27"
+    },
+    {
+      "id": "1aadcb3a1a7e47c5ae0d9c2cb93f1ac9",
+      "drama_id": "the_nbound_rise_of_god_slayer",
+      "number": 7,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_7_60e34ff9c6.mp4",
+      "created_at": "2026-09-24T07:58:41",
+      "updated_at": "2026-09-24T07:58:41"
+    },
+    {
+      "id": "50b25566654a4125a8508dab797f52f5",
+      "drama_id": "the_nbound_rise_of_god_slayer",
+      "number": 8,
+      "title": "THE $200 GHOST FIGHTER",
+      "video": "/uploads/videos/ep_8_959a4a68b9.mp4",
+      "created_at": "2026-09-24T07:59:08",
+      "updated_at": "2026-09-24T07:59:08"
+    },
+    {
+      "id": "c35168ccf4d04071a49316ccaab180b8",
+      "drama_id": "the_nbound_rise_of_god_slayer",
+      "number": 9,
+      "title": "THE Unbound rise of god slayer",
+      "video": "/uploads/videos/ep_9_209f68ee92.mp4",
+      "created_at": "2026-09-24T09:02:13",
+      "updated_at": "2026-09-24T09:02:13"
+    }
+  ],
+  "homepage": {
+    "hero": [
+      "zunka",
+      "the_200_ghost_fighter",
+      "the_nbound_rise_of_god_slayer"
+    ],
+    "new_releases": [
+      "zunka",
+      "the_200_ghost_fighter",
+      "the_nbound_rise_of_god_slayer"
+    ],
+    "trending": [
+      "zunka",
+      "the_200_ghost_fighter"
+    ],
+    "for_you": [
+      "zunka",
+      "the_200_ghost_fighter",
+      "the_nbound_rise_of_god_slayer"
+    ],
+    "popular": [
+      "zunka",
+      "the_200_ghost_fighter"
+    ]
+  },
+  "analytics": {
+    "visits": 120,
+    "unique_visitors": 8,
+    "drama_views": {},
+    "episode_views": {},
+    "daily": {
+      "2026-09-21": {
+        "visits": 50,
+        "unique_visitors": 3
+      },
+      "2026-09-22": {
+        "visits": 9,
+        "unique_visitors": 3
+      },
+      "2026-09-23": {
+        "visits": 34,
+        "unique_visitors": 1
+      },
+      "2026-09-24": {
+        "visits": 8,
+        "unique_visitors": 0
+      },
+      "2026-09-25": {
+        "visits": 19,
+        "unique_visitors": 1
+      }
+    },
+    "activity": [
+      {
+        "time": "2026-09-24T09:02:13",
+        "action": "episode_added",
+        "details": "The unbound rise of god slayer - Episode 9"
+      },
+      {
+        "time": "2026-09-24T09:00:50",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-24T08:54:22",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-24T07:59:08",
+        "action": "episode_added",
+        "details": "The unbound rise of god slayer - Episode 8"
+      },
+      {
+        "time": "2026-09-24T07:58:41",
+        "action": "episode_added",
+        "details": "The unbound rise of god slayer - Episode 7"
+      },
+      {
+        "time": "2026-09-24T07:58:27",
+        "action": "episode_added",
+        "details": "The unbound rise of god slayer - Episode 6"
+      },
+      {
+        "time": "2026-09-24T07:57:54",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-24T07:46:08",
+        "action": "homepage_updated",
+        "details": "Homepage placements updated"
+      },
+      {
+        "time": "2026-09-24T07:45:21",
+        "action": "drama_updated",
+        "details": "The unbound rise of god slayer"
+      },
+      {
+        "time": "2026-09-24T07:45:21",
+        "action": "cover_uploaded",
+        "details": "5d2ab096dc96400697ec23a1b8012639.jpg"
+      },
+      {
+        "time": "2026-09-24T07:45:18",
+        "action": "drama_updated",
+        "details": "The unbound rise of god slayer"
+      },
+      {
+        "time": "2026-09-24T07:44:06",
+        "action": "episode_added",
+        "details": "The unbound rise of god slayer - Episode 5"
+      },
+      {
+        "time": "2026-09-24T07:43:40",
+        "action": "episode_added",
+        "details": "The unbound rise of god slayer - Episode 4"
+      },
+      {
+        "time": "2026-09-24T07:42:01",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-24T07:30:19",
+        "action": "episode_added",
+        "details": "The unbound rise of god slayer - Episode 3"
+      },
+      {
+        "time": "2026-09-24T07:29:53",
+        "action": "episode_added",
+        "details": "The unbound rise of god slayer - Episode 2"
+      },
+      {
+        "time": "2026-09-24T07:29:25",
+        "action": "episode_added",
+        "details": "The unbound rise of god slayer - Episode 1"
+      },
+      {
+        "time": "2026-09-24T07:29:02",
+        "action": "drama_updated",
+        "details": "The unbound rise of god slayer"
+      },
+      {
+        "time": "2026-09-24T07:28:09",
+        "action": "drama_created",
+        "details": "The nbound rise of god slayer"
+      },
+      {
+        "time": "2026-09-24T07:27:06",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-23T18:13:40",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-23T18:13:26",
+        "action": "episode_updated",
+        "details": "THE $200 GHOST FIGHTER - Episode 27"
+      },
+      {
+        "time": "2026-09-23T18:10:45",
+        "action": "episode_updated",
+        "details": "THE $200 GHOST FIGHTER - Episode 17"
+      },
+      {
+        "time": "2026-09-23T18:07:13",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-23T18:07:00",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 30"
+      },
+      {
+        "time": "2026-09-23T18:06:21",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 29"
+      },
+      {
+        "time": "2026-09-23T18:05:53",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 28"
+      },
+      {
+        "time": "2026-09-23T18:05:19",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 27"
+      },
+      {
+        "time": "2026-09-23T18:04:48",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 26"
+      },
+      {
+        "time": "2026-09-23T18:04:20",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 25"
+      },
+      {
+        "time": "2026-09-23T18:02:39",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 24"
+      },
+      {
+        "time": "2026-09-23T18:01:52",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 23"
+      },
+      {
+        "time": "2026-09-23T18:01:30",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 22"
+      },
+      {
+        "time": "2026-09-23T18:01:04",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 21"
+      },
+      {
+        "time": "2026-09-23T18:00:41",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 20"
+      },
+      {
+        "time": "2026-09-23T17:59:48",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 19"
+      },
+      {
+        "time": "2026-09-23T17:59:20",
+        "action": "episode_updated",
+        "details": "THE $200 GHOST FIGHTER - Episode 18"
+      },
+      {
+        "time": "2026-09-23T17:58:50",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-23T17:58:23",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 19"
+      },
+      {
+        "time": "2026-09-23T17:58:07",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 17"
+      },
+      {
+        "time": "2026-09-23T17:57:41",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-23T17:41:02",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 16"
+      },
+      {
+        "time": "2026-09-23T17:40:32",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 15"
+      },
+      {
+        "time": "2026-09-23T17:40:04",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-23T17:39:44",
+        "action": "episode_updated",
+        "details": "THE $200 GHOST FIGHTER - Episode 12"
+      },
+      {
+        "time": "2026-09-23T17:38:56",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-23T17:38:26",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 14"
+      },
+      {
+        "time": "2026-09-23T17:37:55",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 13"
+      },
+      {
+        "time": "2026-09-23T17:37:23",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 12"
+      },
+      {
+        "time": "2026-09-23T17:37:05",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 11"
+      },
+      {
+        "time": "2026-09-23T17:36:40",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 10"
+      },
+      {
+        "time": "2026-09-23T17:35:56",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 9"
+      },
+      {
+        "time": "2026-09-23T17:35:37",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 8"
+      },
+      {
+        "time": "2026-09-23T17:34:40",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-23T14:32:12",
+        "action": "homepage_updated",
+        "details": "Homepage placements updated"
+      },
+      {
+        "time": "2026-09-23T14:31:53",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-23T14:31:17",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 7"
+      },
+      {
+        "time": "2026-09-23T14:30:36",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 6"
+      },
+      {
+        "time": "2026-09-23T14:29:50",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 5"
+      },
+      {
+        "time": "2026-09-23T14:29:26",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 4"
+      },
+      {
+        "time": "2026-09-23T14:29:02",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 3"
+      },
+      {
+        "time": "2026-09-23T14:28:20",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 2"
+      },
+      {
+        "time": "2026-09-23T14:25:44",
+        "action": "episode_added",
+        "details": "THE $200 GHOST FIGHTER - Episode 1"
+      },
+      {
+        "time": "2026-09-23T14:24:05",
+        "action": "drama_updated",
+        "details": "THE $200 GHOST FIGHTER"
+      },
+      {
+        "time": "2026-09-23T14:24:05",
+        "action": "cover_uploaded",
+        "details": "aa928ccbbcce4746bf4702a546ed49a6.jpg"
+      },
+      {
+        "time": "2026-09-23T14:24:05",
+        "action": "drama_created",
+        "details": "THE $200 GHOST FIGHTER"
+      },
+      {
+        "time": "2026-09-23T14:22:41",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-22T11:58:04",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-21T18:54:13",
+        "action": "episode_updated",
+        "details": "ZUNKA - Episode 1"
+      },
+      {
+        "time": "2026-09-21T18:49:16",
+        "action": "homepage_updated",
+        "details": "Homepage placements updated"
+      },
+      {
+        "time": "2026-09-21T18:49:06",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-21T18:47:47",
+        "action": "episode_added",
+        "details": "ZUNKA - Episode 1"
+      },
+      {
+        "time": "2026-09-21T18:38:39",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-21T18:33:47",
+        "action": "settings_updated",
+        "details": "Site settings updated"
+      },
+      {
+        "time": "2026-09-21T18:17:20",
+        "action": "drama_deleted",
+        "details": "Andrew"
+      },
+      {
+        "time": "2026-09-21T18:17:11",
+        "action": "drama_deleted",
+        "details": "Kavumo"
+      },
+      {
+        "time": "2026-09-21T18:17:00",
+        "action": "drama_deleted",
+        "details": "Good morning"
+      },
+      {
+        "time": "2026-09-21T18:16:46",
+        "action": "drama_deleted",
+        "details": "Andrewy"
+      },
+      {
+        "time": "2026-09-21T18:16:45",
+        "action": "drama_deleted",
+        "details": "Test"
+      },
+      {
+        "time": "2026-09-21T18:15:36",
+        "action": "drama_updated",
+        "details": "ZUNKA"
+      },
+      {
+        "time": "2026-09-21T18:15:36",
+        "action": "cover_uploaded",
+        "details": "4e0df0e5307049e9882f4377761f91d6.png"
+      },
+      {
+        "time": "2026-09-21T18:15:36",
+        "action": "drama_created",
+        "details": "ZUNKA"
+      },
+      {
+        "time": "2026-09-21T18:07:12",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-21T17:46:51",
+        "action": "settings_updated",
+        "details": "Site settings updated"
+      },
+      {
+        "time": "2026-09-21T17:46:48",
+        "action": "settings_updated",
+        "details": "Site settings updated"
+      },
+      {
+        "time": "2026-09-21T16:56:57",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-21T16:10:04",
+        "action": "advertising_updated",
+        "details": "Advertising settings updated"
+      },
+      {
+        "time": "2026-09-21T16:09:53",
+        "action": "advertising_updated",
+        "details": "Advertising settings updated"
+      },
+      {
+        "time": "2026-09-21T16:09:52",
+        "action": "advertising_updated",
+        "details": "Advertising settings updated"
+      },
+      {
+        "time": "2026-09-21T16:04:08",
+        "action": "advertising_updated",
+        "details": "Advertising settings updated"
+      },
+      {
+        "time": "2026-09-21T16:04:04",
+        "action": "advertising_updated",
+        "details": "Advertising settings updated"
+      },
+      {
+        "time": "2026-09-21T16:03:02",
+        "action": "admin_login",
+        "details": "Administrator signed in"
+      },
+      {
+        "time": "2026-09-21T15:09:01",
+        "action": "homepage_updated",
+        "details": "Homepage placements updated"
+      },
+      {
+        "time": "2026-09-21T15:08:06",
+        "action": "episode_added",
+        "details": "Test - Episode 15"
+      },
+      {
+        "time": "2026-09-21T15:08:06",
+        "action": "episode_added",
+        "details": "Test - Episode 14"
+      },
+      {
+        "time": "2026-09-21T15:08:06",
+        "action": "episode_added",
+        "details": "Test - Episode 13"
+      },
+      {
+        "time": "2026-09-21T15:08:06",
+        "action": "episode_added",
+        "details": "Test - Episode 12"
+      },
+      {
+        "time": "2026-09-21T15:08:06",
+        "action": "episode_added",
+        "details": "Test - Episode 11"
+      },
+      {
+        "time": "2026-09-21T15:08:06",
+        "action": "episode_added",
+        "details": "Test - Episode 10"
+      },
+      {
+        "time": "2026-09-21T15:08:06",
+        "action": "episode_added",
+        "details": "Test - Episode 9"
+      }
+    ]
+  },
+  "advertising": {
+    "enabled": true,
+    "popup_enabled": false,
+    "home_banner": {
+      "enabled": true,
+      "html": "<div style=\"padding:16px;border-radius:12px;background:#222;color:#fff;text-align:center\">\n  <strong>Advertisement</strong><br>\n  <small>Your ad can appear here</small>\n</div>"
+    },
+    "drama_banner": {
+      "enabled": false,
+      "html": ""
+    },
+    "episode_banner": {
+      "enabled": false,
+      "html": ""
+    },
+    "in_feed": {
+      "enabled": false,
+      "html": ""
+    },
+    "video_preroll": {
+      "enabled": false,
+      "html": ""
+    }
+  },
+  "settings": {
+    "site_name": "SHORT REELS",
+    "site_description": "",
+    "maintenance_mode": false
+  }
+}

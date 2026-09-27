@@ -762,8 +762,6 @@ def home():
             "unique_visitors"
         ] += 1
 
-    save_catalog(data)
-
     return response
 
 

@@ -893,27 +893,36 @@ def admin_login():
             "error": "Too many failed login attempts. Please try again later."
         }), 429
 
-    if not ADMIN_FILE.exists():
+    admin_raw = os.environ.get("ADMIN_CONFIG_JSON")
 
-        return jsonify({
-            "error":
-            "Admin configuration is missing."
-        }), 500
+    if admin_raw:
+        try:
+            admin = json.loads(admin_raw)
+        except Exception:
+            return jsonify({
+                "error":
+                "Admin configuration is invalid."
+            }), 500
+    else:
+        if not ADMIN_FILE.exists():
+            return jsonify({
+                "error":
+                "Admin configuration is missing."
+            }), 500
 
-    try:
-
-        admin = json.loads(
-            ADMIN_FILE.read_text(
-                encoding="utf-8"
+        try:
+            admin = json.loads(
+                ADMIN_FILE.read_text(
+                    encoding="utf-8"
+                )
             )
-        )
 
-    except Exception:
+        except Exception:
 
-        return jsonify({
-            "error":
-            "Admin configuration is invalid."
-        }), 500
+            return jsonify({
+                "error":
+                "Admin configuration is invalid."
+            }), 500
 
     body = request.get_json(
         silent=True

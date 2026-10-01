@@ -895,7 +895,7 @@ const coverSrc = d => {
   return `${IMAGE_DIR}${c}.png`;
 };
 
-const imgTag = d => `<img src="${coverSrc(d)}" data-n="${d.cover}" data-i="0" alt="" loading="lazy" onerror="imgFix(this)">`;
+const imgTag = d => `<img src="${coverSrc(d)}" data-n="${d.cover}" data-i="0" alt="" onerror="imgFix(this)">`;
 const cover = (d, fill) => `<div class="cover${fill ? ' fill' : ''}" style="--g:${grad(d)}"><span class="t">${d.title}</span>${imgTag(d)}</div>`;
 
 let toastT;

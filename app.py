@@ -893,17 +893,13 @@ def admin_login():
             "error": "Too many failed login attempts. Please try again later."
         }), 429
 
-    admin_raw = os.environ.get("ADMIN_CONFIG_JSON")
+    admin = {
+        "username": os.environ.get("ADMIN_USERNAME", ""),
+        "email": os.environ.get("ADMIN_EMAIL", ""),
+        "password_hash": os.environ.get("ADMIN_PASSWORD_HASH", "")
+    }
 
-    if admin_raw:
-        try:
-            admin = json.loads(admin_raw)
-        except Exception:
-            return jsonify({
-                "error":
-                "Admin configuration is invalid."
-            }), 500
-    else:
+    if not all(admin.values()):
         if not ADMIN_FILE.exists():
             return jsonify({
                 "error":
@@ -916,9 +912,7 @@ def admin_login():
                     encoding="utf-8"
                 )
             )
-
         except Exception:
-
             return jsonify({
                 "error":
                 "Admin configuration is invalid."

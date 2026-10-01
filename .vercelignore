@@ -1,0 +1,13 @@
+uploads/videos/
+uploads/covers/
+videos/
+watermark-test.mp4
+watermark-test-2.mp4
+data/
+.git/
+__pycache__/
+*.pyc
+*.pyo
+*.log
+.secret_key
+admin_config.json

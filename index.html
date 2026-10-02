@@ -738,6 +738,58 @@ html, body {
   touch-action: manipulation;
 }
 </style>
+
+<style>
+.dh-video-ad{
+  position:absolute;
+  inset:0;
+  z-index:20;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  box-sizing:border-box;
+  background:rgba(0,0,0,.92);
+}
+.dh-video-ad.show{
+  display:flex;
+}
+.dh-video-ad-inner{
+  position:relative;
+  width:100%;
+  max-width:420px;
+  max-height:90%;
+  overflow:auto;
+  background:#111;
+  border-radius:14px;
+  padding:18px;
+  box-sizing:border-box;
+}
+.dh-video-ad-close{
+  position:absolute;
+  top:8px;
+  right:8px;
+  z-index:3;
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.9);
+  color:#111;
+  font-size:24px;
+  line-height:40px;
+  text-align:center;
+  cursor:pointer;
+}
+.dh-video-ad-label{
+  margin:0 44px 12px 0;
+  color:#999;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+</style>
+
 </head>
 <body>
 <div id="app"></div>
@@ -1233,6 +1285,13 @@ const views = {
   };
   app.innerHTML = renderAd('episode_banner') + `<div class="pl" id="pl"><video id="v" playsinline autoplay src="${episodeUrl(d, n)}"></video>
    <div class="pmsg" id="pm" hidden>This episode isn't available yet.<br>Please try another episode.</div>
+   <div class="dh-video-ad" id="videoAd" aria-hidden="true">
+    <div class="dh-video-ad-inner">
+     <button class="dh-video-ad-close" id="videoAdClose" type="button" aria-label="Close advertisement">&times;</button>
+     <div class="dh-video-ad-label">Advertisement</div>
+     <div id="videoAdContent"></div>
+    </div>
+   </div>
    <div class="ui" id="ui">
     <div class="pl-top"><a class="ib" href="#/drama/${d.id}" aria-label="Back">${ic('back', 26)}</a><span class="g"></span><button class="ib" aria-label="Share" onclick="shareIt('${d.id}')">${ic('share', 22)}</button><button class="ib" id="epSheetBtn" aria-label="All episodes">${ic('queue', 24)}</button><button class="ib" id="spd" aria-label="Settings">${ic('gear', 24)}</button></div>
     <div class="pl-logo"><i></i><span>SHORT<br>REELS</span></div>
@@ -1240,7 +1299,65 @@ const views = {
     <div class="pl-bot"><h1 class="serif">${d.title}</h1><div class="e">Episode ${n}/${realCount}</div><div class="tm"><span id="cu">0:00</span><span id="du">0:00</span></div><div class="bar" id="bar"><b id="fl"></b></div></div>
    </div></div>`;
   const v = $('#v'), ui = $('#ui'), pp = $('#pp'), fmt = s => isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '0:00';
+
+  const videoAd = $('#videoAd');
+  const videoAdContent = $('#videoAdContent');
+  const videoAdClose = $('#videoAdClose');
+
+  const VIDEO_AD_INTERVAL = 120;
+  let videoAdWatchTime = 0;
+  let videoAdShowing = false;
+  let videoAdLastTime = null;
   let hideT, lastSave = 0;
+
+  function closeVideoAd(){
+    if(!videoAd) return;
+
+    videoAdShowing = false;
+    videoAd.classList.remove('show');
+    videoAd.setAttribute('aria-hidden', 'true');
+
+    if(videoAdContent){
+      videoAdContent.innerHTML = '';
+    }
+
+    videoAdLastTime = v.currentTime;
+
+    v.play().catch(() => {
+      pp.innerHTML = ic('tri', 38);
+    });
+  }
+
+  function showVideoAd(){
+    const ad = DH_ADS?.video_preroll;
+
+    if(
+      videoAdShowing ||
+      !DH_ADS?.enabled ||
+      !ad?.enabled ||
+      !ad?.html
+    ){
+      return;
+    }
+
+    videoAdShowing = true;
+    videoAdWatchTime = 0;
+    videoAdLastTime = v.currentTime;
+
+    v.pause();
+
+    if(videoAdContent){
+      videoAdContent.innerHTML = ad.html;
+      executeAdScripts(videoAdContent);
+    }
+
+    if(videoAd){
+      videoAd.classList.add('show');
+      videoAd.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  videoAdClose?.addEventListener('click', closeVideoAd);
   const showUI = () => { ui.classList.remove('off'); clearTimeout(hideT); if (!v.paused) hideT = setTimeout(() => ui.classList.add('off'), 3200); };
   $('#pl').addEventListener('click', e => { if (e.target.closest('button,a,.bar')) return; ui.classList.contains('off') ? showUI() : ui.classList.add('off'); });
   pp.onclick = () => { v.paused ? v.play() : v.pause(); showUI(); };
@@ -1284,10 +1401,55 @@ const views = {
   v.addEventListener('timeupdate', () => {
     $('#cu').textContent = fmt(v.currentTime);
     $('#fl').style.width = (v.duration ? v.currentTime / v.duration * 100 : 0) + '%';
-    if (Date.now() - lastSave > 2000 && v.currentTime > 1) { lastSave = Date.now(); prog[d.id] = { ep: n, t: v.currentTime, d: v.duration || 0, ts: Date.now() }; save('sd_prog', prog); }
+
+    if(
+      !v.paused &&
+      !v.seeking &&
+      !videoAdShowing &&
+      Number.isFinite(videoAdLastTime) &&
+      Number.isFinite(v.currentTime)
+    ){
+      const delta = v.currentTime - videoAdLastTime;
+
+      // Only count normal forward playback. This prevents seeking from
+      // accidentally generating advertisement impressions.
+      if(delta > 0 && delta < 2){
+        videoAdWatchTime += delta;
+
+        if(videoAdWatchTime >= VIDEO_AD_INTERVAL){
+          videoAdWatchTime = 0;
+          showVideoAd();
+        }
+      }
+    }
+
+    videoAdLastTime = v.currentTime;
+
+    if (Date.now() - lastSave > 2000 && v.currentTime > 1) {
+      lastSave = Date.now();
+      prog[d.id] = {
+        ep: n,
+        t: v.currentTime,
+        d: v.duration || 0,
+        ts: Date.now()
+      };
+      save('sd_prog', prog);
+    }
   });
-  v.addEventListener('play', () => { pp.innerHTML = ic('pause', 34); showUI(); });
-  v.addEventListener('pause', () => { pp.innerHTML = ic('tri', 38); showUI(); });
+  v.addEventListener('play', () => {
+    pp.innerHTML = ic('pause', 34);
+    if(!Number.isFinite(videoAdLastTime)) videoAdLastTime = v.currentTime;
+    showUI();
+  });
+
+  v.addEventListener('pause', () => {
+    pp.innerHTML = ic('tri', 38);
+    showUI();
+  });
+
+  v.addEventListener('seeking', () => {
+    videoAdLastTime = v.currentTime;
+  });
   v.addEventListener('ended', () => {
       const nums = PUBLIC_EPISODES
         .filter(e => String(e.drama_id) === String(d.id))

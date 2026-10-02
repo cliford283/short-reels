@@ -904,6 +904,7 @@ function activateRenderedAds(root=document){
   });
 
   trackVisibleAds();
+    activateRenderedAds(document.getElementById('app'));
 }
 
 /* Automatically activate third-party ad scripts after SPA page renders. */
@@ -1292,7 +1293,12 @@ const views = {
      <div id="videoAdContent"></div>
     </div>
    </div>
-   <div class="ui" id="ui">
+   <div class="dh-video-ad" id="videoAd" aria-hidden="true">
+ <div class="dh-video-ad-label">Advertisement</div>
+ <button class="dh-video-ad-close" id="videoAdClose" type="button" aria-label="Close advertisement">&times;</button>
+ <video id="videoAdPlayer" playsinline preload="auto"></video>
+</div>
+<div class="ui" id="ui">
     <div class="pl-top"><a class="ib" href="#/drama/${d.id}" aria-label="Back">${ic('back', 26)}</a><span class="g"></span><button class="ib" aria-label="Share" onclick="shareIt('${d.id}')">${ic('share', 22)}</button><button class="ib" id="epSheetBtn" aria-label="All episodes">${ic('queue', 24)}</button><button class="ib" id="spd" aria-label="Settings">${ic('gear', 24)}</button></div>
     <div class="pl-logo"><i></i><span>SHORT<br>REELS</span></div>
     <div class="pl-mid"><button id="pv" aria-label="Previous episode" ${episodeNumbers.indexOf(n) > 0 ? '' : 'disabled'}>${ic('prev', 28)}</button><button id="rw" aria-label="Back 10 seconds">${ic('rew', 34)}</button><button class="pp" id="pp" aria-label="Play or pause">${ic('pause', 34)}</button><button id="fw" aria-label="Forward 10 seconds">${ic('fwd', 34)}</button><button id="nx" aria-label="Next episode" ${episodeNumbers.indexOf(n) !== -1 && episodeNumbers.indexOf(n) < episodeNumbers.length - 1 ? '' : 'disabled'}>${ic('next', 28)}</button></div>
@@ -1466,6 +1472,7 @@ const views = {
   v.addEventListener('error', () => { v.hidden = true; $('#pm').hidden = false; ui.classList.remove('off'); });
   v.play().catch(() => { pp.innerHTML = ic('tri', 38); });
   showUI();
+  activateRenderedAds(app);
   this.setupPlayerMenus();
  },
 
@@ -1929,6 +1936,57 @@ html.dh-reels-fullscreen .pl video{
   object-fit:cover!important;
 }
 
+
+/* ===== REAL VIDEO ADS ===== */
+.dh-video-ad{
+  position:absolute!important;
+  inset:0!important;
+  z-index:999!important;
+  display:none!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#000!important;
+}
+
+.dh-video-ad.show{
+  display:flex!important;
+}
+
+.dh-video-ad video{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  background:#000!important;
+}
+
+.dh-video-ad-close{
+  position:absolute!important;
+  top:18px!important;
+  right:18px!important;
+  z-index:1001!important;
+  width:42px!important;
+  height:42px!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:rgba(0,0,0,.7)!important;
+  color:#fff!important;
+  font-size:28px!important;
+  line-height:42px!important;
+  text-align:center!important;
+}
+
+.dh-video-ad-label{
+  position:absolute!important;
+  top:20px!important;
+  left:18px!important;
+  z-index:1001!important;
+  padding:6px 10px!important;
+  border-radius:6px!important;
+  background:rgba(0,0,0,.65)!important;
+  color:#fff!important;
+  font:12px Arial,sans-serif!important;
+}
+
 </style>
 
 <div id="sr-cookie-consent-v2">
@@ -2098,6 +2156,362 @@ html.dh-reels-fullscreen .pl video{
 
 })();
 
+
+
+/* ===== 2 MINUTE VIDEO AD SYSTEM ===== */
+(function(){
+
+  const AD_INTERVAL = 120;
+
+  function setupVideoAds(){
+
+    const v = document.getElementById('v');
+    const adBox = document.getElementById('videoAd');
+    const adVideo = document.getElementById('videoAdPlayer');
+    const closeBtn = document.getElementById('videoAdClose');
+
+    if(!v || !adBox || !adVideo) return;
+
+    if(adBox.dataset.ready === '1') return;
+    adBox.dataset.ready = '1';
+
+    let watched = 0;
+    let lastTime = null;
+    let showing = false;
+    let closing = false;
+
+    function getAdSource(){
+
+      const ad = window.DH_ADS && window.DH_ADS.video_preroll;
+
+      if(!window.DH_ADS || !window.DH_ADS.enabled) return '';
+
+      if(!ad || !ad.enabled || !ad.html) return '';
+
+      /*
+       * Accept a direct video URL in the advertising HTML.
+       * Example:
+       * <video src="https://.../ad.mp4"></video>
+       */
+      const temp = document.createElement('div');
+      temp.innerHTML = ad.html;
+
+      const video = temp.querySelector('video');
+
+      if(video){
+        return video.getAttribute('src') || '';
+      }
+
+      const source = temp.querySelector('source');
+
+      if(source){
+        return source.getAttribute('src') || '';
+      }
+
+      /*
+       * Also accept a plain MP4 URL.
+       */
+      const text = ad.html.trim();
+
+      if(/^https?:\/\/.+\.(mp4|webm|mov)(\?.*)?$/i.test(text)){
+        return text;
+      }
+
+      return '';
+    }
+
+    function closeAd(){
+
+      if(!showing) return;
+
+      showing = false;
+      closing = true;
+
+      adVideo.pause();
+      adVideo.removeAttribute('src');
+      adVideo.load();
+
+      adBox.classList.remove('show');
+      adBox.setAttribute('aria-hidden','true');
+
+      lastTime = v.currentTime;
+
+      v.play().catch(function(){
+        const pp = document.getElementById('pp');
+        if(pp && window.ic){
+          pp.innerHTML = ic('tri',38);
+        }
+      });
+
+      setTimeout(function(){
+        closing = false;
+      },300);
+    }
+
+    function showAd(){
+
+      if(
+        showing ||
+        closing ||
+        !v ||
+        v.paused ||
+        !window.DH_ADS ||
+        !window.DH_ADS.enabled
+      ){
+        return;
+      }
+
+      const src = getAdSource();
+
+      if(!src){
+        /*
+         * No playable video ad configured.
+         * Don't repeatedly trigger a broken ad.
+         */
+        watched = 0;
+        lastTime = v.currentTime;
+        return;
+      }
+
+      showing = true;
+      watched = 0;
+      lastTime = v.currentTime;
+
+      v.pause();
+
+      adVideo.src = src;
+      adVideo.currentTime = 0;
+
+      adBox.classList.add('show');
+      adBox.setAttribute('aria-hidden','false');
+
+      adVideo.play().catch(function(){
+        closeAd();
+      });
+    }
+
+    closeBtn.addEventListener('click',closeAd);
+
+    adVideo.addEventListener('ended',function(){
+      closeAd();
+    });
+
+    v.addEventListener('play',function(){
+
+      if(lastTime === null){
+        lastTime = v.currentTime;
+      }
+
+    });
+
+    v.addEventListener('seeking',function(){
+      lastTime = v.currentTime;
+    });
+
+    v.addEventListener('timeupdate',function(){
+
+      if(
+        showing ||
+        v.paused ||
+        v.seeking ||
+        !Number.isFinite(v.currentTime)
+      ){
+        lastTime = v.currentTime;
+        return;
+      }
+
+      if(lastTime === null){
+        lastTime = v.currentTime;
+        return;
+      }
+
+      const delta = v.currentTime - lastTime;
+
+      /*
+       * Count only normal forward playback.
+       * Seeking and large jumps don't count as watch time.
+       */
+      if(delta > 0 && delta < 2){
+        watched += delta;
+      }
+
+      lastTime = v.currentTime;
+
+      if(watched >= AD_INTERVAL){
+        watched = 0;
+        showAd();
+      }
+    });
+
+    /*
+     * Make the counter reset when changing episodes.
+     */
+    window.addEventListener('hashchange',function(){
+      watched = 0;
+      lastTime = null;
+      if(showing) closeAd();
+    });
+
+  }
+
+  /*
+   * Episode pages are created dynamically by the SPA.
+   */
+  const app = document.getElementById('app');
+
+  if(app){
+    new MutationObserver(function(){
+      if(document.getElementById('videoAdPlayer')){
+        setupVideoAds();
+      }
+    }).observe(app,{
+      childList:true,
+      subtree:true
+    });
+  }
+
+  setupVideoAds();
+
+})();
+
+</script>
+
+
+<script>
+/* 2 MINUTE VIDEO AD SYSTEM */
+(function(){
+  let adTimer = 0;
+  let adPlaying = false;
+  let adVideo = null;
+  let watchedSeconds = 0;
+  let lastTick = 0;
+
+  function getVideoAdUrl(){
+    const html = DH_ADS && DH_ADS.video_preroll && DH_ADS.video_preroll.enabled
+      ? (DH_ADS.video_preroll.html || '')
+      : '';
+
+    if(!html) return '';
+
+    const box = document.createElement('div');
+    box.innerHTML = html;
+
+    const v = box.querySelector('video');
+    if(v){
+      if(v.getAttribute('src')) return v.getAttribute('src');
+      const source = v.querySelector('source[src]');
+      if(source) return source.getAttribute('src');
+    }
+
+    const source = box.querySelector('source[src]');
+    if(source) return source.getAttribute('src');
+
+    const match = html.match(/https?:\/\/[^"'\\s>]+\\.(?:mp4|webm|mov)(?:\\?[^"'\\s>]*)?/i);
+    return match ? match[0] : '';
+  }
+
+  function createVideoAd(){
+    if(document.getElementById('dhVideoAd')) return;
+
+    const wrap = document.createElement('div');
+    wrap.id = 'dhVideoAd';
+    wrap.className = 'dh-video-ad';
+    wrap.innerHTML = `
+      <div class="dh-video-ad-label">Advertisement</div>
+      <button class="dh-video-ad-close" type="button" aria-label="Close advertisement">&times;</button>
+      <video id="dhVideoAdPlayer" playsinline preload="auto"></video>
+    `;
+
+    document.body.appendChild(wrap);
+
+    adVideo = document.getElementById('dhVideoAdPlayer');
+
+    wrap.querySelector('.dh-video-ad-close').onclick = closeVideoAd;
+
+    adVideo.addEventListener('ended', closeVideoAd);
+    adVideo.addEventListener('error', closeVideoAd);
+  }
+
+  function currentEpisodeVideo(){
+    return document.querySelector('#v');
+  }
+
+  function showVideoAd(){
+    if(adPlaying) return;
+
+    const src = getVideoAdUrl();
+    const episode = currentEpisodeVideo();
+
+    if(!src || !episode) return;
+
+    createVideoAd();
+
+    adPlaying = true;
+    episode.pause();
+
+    adVideo.src = src;
+
+    const wrap = document.getElementById('dhVideoAd');
+    wrap.classList.add('show');
+    wrap.setAttribute('aria-hidden', 'false');
+
+    adVideo.currentTime = 0;
+    adVideo.play().catch(() => closeVideoAd());
+  }
+
+  function closeVideoAd(){
+    if(!adPlaying) return;
+
+    const episode = currentEpisodeVideo();
+
+    adPlaying = false;
+
+    if(adVideo){
+      adVideo.pause();
+      adVideo.removeAttribute('src');
+      adVideo.load();
+    }
+
+    const wrap = document.getElementById('dhVideoAd');
+
+    if(wrap){
+      wrap.classList.remove('show');
+      wrap.setAttribute('aria-hidden', 'true');
+    }
+
+    if(episode){
+      episode.play().catch(() => {});
+    }
+
+    watchedSeconds = 0;
+  }
+
+  function tick(){
+    const episode = currentEpisodeVideo();
+
+    if(!episode || episode.paused || episode.ended || adPlaying){
+      lastTick = 0;
+      return;
+    }
+
+    const now = Date.now();
+
+    if(lastTick){
+      watchedSeconds += Math.min((now - lastTick) / 1000, 2);
+    }
+
+    lastTick = now;
+
+    if(watchedSeconds >= 120){
+      watchedSeconds = 0;
+      showVideoAd();
+    }
+  }
+
+  setInterval(tick, 1000);
+
+  window.DH_SHOW_VIDEO_AD = showVideoAd;
+})();
 </script>
 
 </body>

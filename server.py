@@ -3157,6 +3157,111 @@ def admin_advertising():
 
 
 # =========================================================
+# AD VIDEO UPLOAD
+# =========================================================
+
+@app.route("/api/admin/advertising/video-upload", methods=["POST"])
+@admin_required
+def admin_advertising_video_upload():
+
+    if "file" not in request.files:
+        return jsonify({
+            "ok": False,
+            "error": "No video file supplied"
+        }), 400
+
+    file = request.files["file"]
+
+    if not file or not file.filename:
+        return jsonify({
+            "ok": False,
+            "error": "Invalid video file"
+        }), 400
+
+    filename = secure_filename(file.filename)
+
+    if not filename:
+        return jsonify({
+            "ok": False,
+            "error": "Invalid filename"
+        }), 400
+
+    allowed = {
+        ".mp4": "video/mp4",
+        ".webm": "video/webm",
+        ".mov": "video/quicktime"
+    }
+
+    ext = os.path.splitext(filename)[1].lower()
+
+    if ext not in allowed:
+        return jsonify({
+            "ok": False,
+            "error": "Only MP4, WebM and MOV videos are supported"
+        }), 400
+
+    import uuid
+
+    key = f"ads/{uuid.uuid4().hex}-{filename}"
+
+    try:
+        r2.upload_fileobj(
+            file,
+            R2_BUCKET_NAME,
+            key,
+            ExtraArgs={
+                "ContentType": allowed[ext]
+            }
+        )
+
+        url = f"{R2_PUBLIC_URL}/{key}"
+
+        data = load_catalog()
+
+        ads = data.setdefault("advertising", {})
+
+        video_ad = ads.setdefault(
+            "video_preroll",
+            {
+                "enabled": False,
+                "html": ""
+            }
+        )
+
+        video_ad["html"] = (
+            f'<video src="{url}" '
+            f'playsinline preload="auto"></video>'
+        )
+
+        video_ad["enabled"] = True
+
+        save_catalog(data)
+
+        record_activity(
+            "advertising_video_uploaded",
+            f"Advertising video uploaded: {filename}"
+        )
+
+        return jsonify({
+            "ok": True,
+            "url": url,
+            "html": video_ad["html"]
+        })
+
+    except Exception as e:
+
+        app.logger.exception(
+            "Advertising video upload failed"
+        )
+
+        return jsonify({
+            "ok": False,
+            "error": "Advertising video upload failed"
+        }), 500
+
+
+
+# =========================================================
 # MONETIZATION / PREMIUM
 # =========================================================
 

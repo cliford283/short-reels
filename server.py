@@ -7,6 +7,8 @@ from pathlib import Path
 from datetime import datetime
 from functools import wraps
 
+import boto3
+import os
 from flask import (
     Flask, request, jsonify, session, redirect,
     send_from_directory, make_response
@@ -21,19 +23,45 @@ from werkzeug.utils import secure_filename
 
 BASE = Path(__file__).resolve().parent
 
+# Vercel's deployment filesystem is read-only.
+IS_VERCEL = bool(os.environ.get("VERCEL"))
+
 DATA_DIR = BASE / "data"
+R2_ACCOUNT_ID = os.getenv("R2_ACCOUNT_ID")
+R2_ACCESS_KEY_ID = os.getenv("R2_ACCESS_KEY_ID")
+R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY")
+R2_BUCKET_NAME = os.getenv("R2_BUCKET_NAME")
+R2_PUBLIC_URL = os.getenv("R2_PUBLIC_URL", "").rstrip("/")
+
+R2_ENDPOINT = f"https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+
+r2 = boto3.client(
+    "s3",
+    endpoint_url=R2_ENDPOINT,
+    aws_access_key_id=R2_ACCESS_KEY_ID,
+    aws_secret_access_key=R2_SECRET_ACCESS_KEY,
+    region_name="auto",
+)
+
 UPLOAD_DIR = BASE / "uploads"
 COVERS_DIR = UPLOAD_DIR / "covers"
 VIDEOS_DIR = UPLOAD_DIR / "videos"
 
-CATALOG_FILE = DATA_DIR / "catalog.json"
+# Vercel bundles catalog.json at the function root.
+# Local development keeps using data/catalog.json.
+if IS_VERCEL:
+    CATALOG_FILE = BASE / "catalog.json"
+else:
+    CATALOG_FILE = DATA_DIR / "catalog.json"
+
 ADMIN_FILE = BASE / "admin_config.json"
 SECRET_FILE = BASE / ".secret_key"
 
-DATA_DIR.mkdir(exist_ok=True)
-UPLOAD_DIR.mkdir(exist_ok=True)
-COVERS_DIR.mkdir(exist_ok=True)
-VIDEOS_DIR.mkdir(exist_ok=True)
+if not IS_VERCEL:
+    DATA_DIR.mkdir(exist_ok=True)
+    UPLOAD_DIR.mkdir(exist_ok=True)
+    COVERS_DIR.mkdir(exist_ok=True)
+    VIDEOS_DIR.mkdir(exist_ok=True)
 
 
 # =========================================================
@@ -43,11 +71,15 @@ VIDEOS_DIR.mkdir(exist_ok=True)
 app = Flask(__name__)
 
 
-if SECRET_FILE.exists():
+if os.environ.get("SECRET_KEY"):
+    SECRET_KEY = os.environ["SECRET_KEY"]
+elif SECRET_FILE.exists():
     SECRET_KEY = SECRET_FILE.read_text().strip()
-else:
+elif not IS_VERCEL:
     SECRET_KEY = os.urandom(32).hex()
     SECRET_FILE.write_text(SECRET_KEY)
+else:
+    SECRET_KEY = os.urandom(32).hex()
 
 app.secret_key = SECRET_KEY
 
@@ -99,38 +131,64 @@ DEFAULT_ANALYTICS = {
 
 def load_catalog():
 
-    if not CATALOG_FILE.exists():
-
-        data = {
-            "dramas": [],
-            "episodes": [],
-            "homepage": {
-                "hero": [],
-                "new_releases": [],
-                "trending": [],
-                "for_you": [],
-                "popular": []
-            },
-            "analytics": DEFAULT_ANALYTICS.copy()
-        }
-
-        save_catalog(data)
-        return data
-
-    try:
-        data = json.loads(
-            CATALOG_FILE.read_text(
-                encoding="utf-8"
+    if IS_VERCEL:
+        try:
+            response = r2.get_object(
+                Bucket=R2_BUCKET_NAME,
+                Key="data/catalog.json"
             )
-        )
-    except Exception:
 
-        data = {}
+            data = json.loads(
+                response["Body"].read().decode("utf-8")
+            )
+
+        except Exception:
+            # First deployment: use the bundled catalog.json
+            if CATALOG_FILE.exists():
+                try:
+                    data = json.loads(
+                        CATALOG_FILE.read_text(
+                            encoding="utf-8"
+                        )
+                    )
+                except Exception:
+                    data = {}
+            else:
+                data = {}
+
+    else:
+
+        if not CATALOG_FILE.exists():
+
+            data = {
+                "dramas": [],
+                "episodes": [],
+                "homepage": {
+                    "hero": [],
+                    "new_releases": [],
+                    "trending": [],
+                    "for_you": [],
+                    "popular": []
+                },
+                "analytics": DEFAULT_ANALYTICS.copy()
+            }
+
+            save_catalog(data)
+            return data
+
+        try:
+            data = json.loads(
+                CATALOG_FILE.read_text(
+                    encoding="utf-8"
+                )
+            )
+
+        except Exception:
+            data = {}
 
     data.setdefault("dramas", [])
     data.setdefault("episodes", [])
 
-    # Homepage settings were added later.
     data.setdefault("homepage", {})
 
     for section in [
@@ -162,6 +220,21 @@ def load_catalog():
 
 def save_catalog(data):
 
+    if IS_VERCEL:
+
+        r2.put_object(
+            Bucket=R2_BUCKET_NAME,
+            Key="data/catalog.json",
+            Body=json.dumps(
+                data,
+                indent=2,
+                ensure_ascii=False
+            ).encode("utf-8"),
+            ContentType="application/json"
+        )
+
+        return
+
     temp = CATALOG_FILE.with_suffix(".tmp")
 
     temp.write_text(
@@ -174,6 +247,7 @@ def save_catalog(data):
     )
 
     temp.replace(CATALOG_FILE)
+
 
 
 # =========================================================
@@ -897,27 +971,30 @@ def admin_login():
             "error": "Too many failed login attempts. Please try again later."
         }), 429
 
-    if not ADMIN_FILE.exists():
+    # Production uses Vercel environment variables.
+    # Local development continues to use admin_config.json.
+    if os.environ.get("ADMIN_USERNAME") and os.environ.get("ADMIN_PASSWORD_HASH"):
+        admin = {
+            "username": os.environ.get("ADMIN_USERNAME", ""),
+            "email": os.environ.get("ADMIN_EMAIL", ""),
+            "password_hash": os.environ.get("ADMIN_PASSWORD_HASH", "")
+        }
+    else:
+        if not ADMIN_FILE.exists():
+            return jsonify({
+                "error": "Admin configuration is missing."
+            }), 500
 
-        return jsonify({
-            "error":
-            "Admin configuration is missing."
-        }), 500
-
-    try:
-
-        admin = json.loads(
-            ADMIN_FILE.read_text(
-                encoding="utf-8"
+        try:
+            admin = json.loads(
+                ADMIN_FILE.read_text(
+                    encoding="utf-8"
+                )
             )
-        )
-
-    except Exception:
-
-        return jsonify({
-            "error":
-            "Admin configuration is invalid."
-        }), 500
+        except Exception:
+            return jsonify({
+                "error": "Admin configuration is invalid."
+            }), 500
 
     body = request.get_json(
         silent=True
@@ -1458,6 +1535,341 @@ def get_episodes():
     )
 
 
+
+# =========================================================
+# EPISODE CREATOR — R2 SOURCE UPLOAD + SPLIT JOB
+# =========================================================
+
+@app.route("/api/episode-creator/presign", methods=["POST"])
+@admin_required
+def episode_creator_presign():
+
+    body = request.get_json(silent=True) or {}
+
+    filename = str(body.get("filename") or "").strip()
+    content_type = str(
+        body.get("content_type") or "video/mp4"
+    ).strip()
+
+    if not filename:
+        return jsonify({"error": "Source filename is required"}), 400
+
+    if not allowed_video(filename):
+        return jsonify({
+            "error": "Unsupported video format"
+        }), 400
+
+    extension = Path(filename).suffix.lower() or ".mp4"
+    source_id = uuid.uuid4().hex
+
+    key = f"sources/{source_id}{extension}"
+
+    try:
+        upload_url = r2.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": R2_BUCKET_NAME,
+                "Key": key,
+                "ContentType": content_type
+            },
+            ExpiresIn=3600
+        )
+
+        public_url = f"{R2_PUBLIC_URL}/{key}"
+
+        return jsonify({
+            "ok": True,
+            "key": key,
+            "upload_url": upload_url,
+            "url": public_url
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Could not create upload URL: {str(e)}"
+        }), 500
+
+
+
+@app.route("/api/episode-creator/auto-segments", methods=["POST"])
+@admin_required
+def auto_episode_segments():
+
+    body = request.get_json(silent=True) or {}
+
+    try:
+        duration = float(body.get("duration", 0))
+    except (TypeError, ValueError):
+        duration = 0
+
+    if duration <= 0:
+        return jsonify({
+            "error": "Valid video duration is required"
+        }), 400
+
+    drama_id = str(body.get("drama_id") or "").strip()
+
+    if not drama_id:
+        return jsonify({
+            "error": "Drama is required"
+        }), 400
+
+    data = load_catalog()
+
+    drama = find_drama(data, drama_id)
+
+    if not drama:
+        return jsonify({
+            "error": "Drama not found"
+        }), 404
+
+    # 2.5 minutes = 150 seconds
+    EPISODE_LENGTH = 150
+
+    existing_numbers = {
+        int(e.get("number", 0))
+        for e in data.get("episodes", [])
+        if e.get("drama_id") == drama_id
+    }
+
+    episode_count = int(
+        (duration + EPISODE_LENGTH - 0.001)
+        // EPISODE_LENGTH
+    )
+
+    # Start after the highest existing episode number.
+    next_number = max(existing_numbers, default=0) + 1
+
+    segments = []
+
+    for index in range(episode_count):
+
+        start = index * EPISODE_LENGTH
+        end = min(
+            start + EPISODE_LENGTH,
+            duration
+        )
+
+        number = next_number + index
+
+        segments.append({
+            "number": number,
+            "start": round(start, 3),
+            "end": round(end, 3),
+            "title": f"Episode {number}",
+            "thumbnail": "",
+            "status": "queued"
+        })
+
+    return jsonify({
+        "ok": True,
+        "episode_length": EPISODE_LENGTH,
+        "duration": round(duration, 3),
+        "count": len(segments),
+        "segments": segments
+    })
+
+
+@app.route("/api/episode-creator/job", methods=["POST"])
+@admin_required
+def create_episode_creator_job():
+
+    body = request.get_json(silent=True) or {}
+
+    drama_id = str(body.get("drama_id") or "").strip()
+    source_key = str(body.get("source_key") or "").strip()
+    source_url = str(body.get("source_url") or "").strip()
+    segments = body.get("segments") or []
+
+    if not drama_id:
+        return jsonify({"error": "Drama is required"}), 400
+
+    if not source_key:
+        return jsonify({"error": "Source video is required"}), 400
+
+    if not isinstance(segments, list) or not segments:
+        return jsonify({"error": "At least one episode segment is required"}), 400
+
+    data = load_catalog()
+
+    drama = find_drama(data, drama_id)
+
+    if not drama:
+        return jsonify({"error": "Drama not found"}), 404
+
+    clean_segments = []
+
+    for index, segment in enumerate(segments, start=1):
+
+        try:
+            number = int(segment.get("number", index))
+            start = float(segment.get("start", 0))
+            end = float(segment.get("end", 0))
+        except (TypeError, ValueError):
+            return jsonify({
+                "error": f"Invalid segment {index}"
+            }), 400
+
+        if number < 1:
+            return jsonify({
+                "error": f"Invalid episode number in segment {index}"
+            }), 400
+
+        if start < 0 or end <= start:
+            return jsonify({
+                "error": f"Invalid time range in segment {index}"
+            }), 400
+
+        clean_segments.append({
+            "number": number,
+            "start": round(start, 3),
+            "end": round(end, 3),
+            "title": str(
+                segment.get("title")
+                or f"Episode {number}"
+            ).strip(),
+            "thumbnail": str(
+                segment.get("thumbnail") or ""
+            ).strip(),
+            "status": "queued"
+        })
+
+    existing_numbers = {
+        int(e.get("number", 0))
+        for e in data.get("episodes", [])
+        if e.get("drama_id") == drama_id
+    }
+
+    duplicates = [
+        x["number"]
+        for x in clean_segments
+        if x["number"] in existing_numbers
+    ]
+
+    if duplicates:
+        return jsonify({
+            "error": (
+                "These episode numbers already exist: "
+                + ", ".join(map(str, duplicates))
+            )
+        }), 409
+
+    job = {
+        "id": uuid.uuid4().hex,
+        "type": "episode_split",
+        "status": "queued",
+        "progress": 0,
+        "drama_id": drama_id,
+        "drama_title": drama.get("title", ""),
+        "source_key": source_key,
+        "source_url": source_url,
+        "segments": clean_segments,
+        "created_at": datetime.now().isoformat(
+            timespec="seconds"
+        ),
+        "updated_at": datetime.now().isoformat(
+            timespec="seconds"
+        )
+    }
+
+    data.setdefault("episode_jobs", [])
+    data["episode_jobs"].append(job)
+
+    save_catalog(data)
+
+    record_activity(
+        "episode_split_job_created",
+        (
+            f"{drama.get('title', drama_id)} "
+            f"- {len(clean_segments)} episode(s)"
+        )
+    )
+
+    return jsonify({
+        "ok": True,
+        "job": job
+    }), 201
+
+
+@app.route("/api/episode-creator/jobs/<job_id>")
+@admin_required
+def get_episode_creator_job(job_id):
+
+    data = load_catalog()
+
+    job = next(
+        (
+            x for x in data.get("episode_jobs", [])
+            if x.get("id") == job_id
+        ),
+        None
+    )
+
+    if not job:
+        return jsonify({
+            "error": "Job not found"
+        }), 404
+
+    return jsonify(job)
+
+
+
+# =========================================================
+# EPISODES — DIRECT R2 UPLOAD
+# =========================================================
+
+@app.route("/api/episodes/presign", methods=["POST"])
+@admin_required
+def episode_presign():
+
+    body = request.get_json(silent=True) or {}
+
+    filename = str(body.get("filename") or "").strip()
+    content_type = str(
+        body.get("content_type") or "video/mp4"
+    ).strip()
+
+    if not filename:
+        return jsonify({
+            "error": "Video filename is required"
+        }), 400
+
+    if not allowed_video(filename):
+        return jsonify({
+            "error": "Unsupported video format"
+        }), 400
+
+    extension = Path(filename).suffix.lower() or ".mp4"
+    upload_id = uuid.uuid4().hex
+    key = f"episodes/{upload_id}{extension}"
+
+    try:
+        upload_url = r2.generate_presigned_url(
+            "put_object",
+            Params={
+                "Bucket": R2_BUCKET_NAME,
+                "Key": key,
+                "ContentType": content_type
+            },
+            ExpiresIn=3600
+        )
+
+        public_url = f"{R2_PUBLIC_URL}/{key}"
+
+        return jsonify({
+            "ok": True,
+            "key": key,
+            "url": public_url,
+            "upload_url": upload_url,
+            "content_type": content_type
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Could not create upload URL: {str(e)}"
+        }), 500
+
+
 # =========================================================
 # EPISODES — CREATE
 # =========================================================
@@ -1469,24 +1881,59 @@ def get_episodes():
 @admin_required
 def create_episode():
 
-    drama_id = request.form.get(
-        "drama_id",
-        ""
-    ).strip()
-
-    number = request.form.get(
-        "number",
-        ""
-    ).strip()
-
-    title = request.form.get(
-        "title",
-        ""
-    ).strip()
-
-    video = request.files.get(
-        "video"
+    is_json = bool(
+        request.content_type
+        and request.content_type.startswith(
+            "application/json"
+        )
     )
+
+    if is_json:
+
+        body = request.get_json(
+            silent=True
+        ) or {}
+
+        drama_id = str(
+            body.get("drama_id") or ""
+        ).strip()
+
+        number = str(
+            body.get("number") or ""
+        ).strip()
+
+        title = str(
+            body.get("title") or ""
+        ).strip()
+
+        video_key = str(
+            body.get("video_key") or ""
+        ).strip()
+
+        video = None
+
+    else:
+
+        drama_id = request.form.get(
+            "drama_id",
+            ""
+        ).strip()
+
+        number = request.form.get(
+            "number",
+            ""
+        ).strip()
+
+        title = request.form.get(
+            "title",
+            ""
+        ).strip()
+
+        video = request.files.get(
+            "video"
+        )
+
+        video_key = ""
 
     if not drama_id or not number:
 
@@ -1527,13 +1974,9 @@ def create_episode():
         (
             e
             for e in data["episodes"]
-            if e.get("drama_id")
-            == drama_id
+            if e.get("drama_id") == drama_id
             and int(
-                e.get(
-                    "number",
-                    0
-                )
+                e.get("number", 0)
             ) == ep_number
         ),
         None
@@ -1546,42 +1989,97 @@ def create_episode():
             "That episode number already exists"
         }), 409
 
-    if not video:
+    # -----------------------------------------------------
+    # New direct-to-R2 upload path.
+    # -----------------------------------------------------
+    if is_json:
 
-        return jsonify({
-            "error":
-            "Video file is required"
-        }), 400
+        if not video_key:
 
-    if not allowed_video(
-        video.filename
-    ):
+            return jsonify({
+                "error":
+                "Video upload is required"
+            }), 400
 
-        return jsonify({
-            "error":
-            "Unsupported video format"
-        }), 400
+        if not video_key.startswith(
+            "episodes/"
+        ):
 
-    # Save the uploaded video directly as the final episode file.
-    filename = (
-        f"ep_{ep_number}_"
-        f"{uuid.uuid4().hex[:10]}"
-        ".mp4"
-    )
+            return jsonify({
+                "error":
+                "Invalid episode upload"
+            }), 400
 
-    destination = VIDEOS_DIR / filename
+        video_url = (
+            f"{R2_PUBLIC_URL}/{video_key}"
+        )
 
-    try:
-        video.save(destination)
-    except Exception as e:
+    # -----------------------------------------------------
+    # Existing multipart path kept as fallback.
+    # -----------------------------------------------------
+    else:
+
+        if not video:
+
+            return jsonify({
+                "error":
+                "Video file is required"
+            }), 400
+
+        if not allowed_video(
+            video.filename
+        ):
+
+            return jsonify({
+                "error":
+                "Unsupported video format"
+            }), 400
+
+        extension = (
+            Path(video.filename)
+            .suffix
+            .lower()
+            or ".mp4"
+        )
+
+        filename = (
+            f"ep_{ep_number}_"
+            f"{uuid.uuid4().hex[:10]}"
+            f"{extension}"
+        )
+
+        destination = (
+            VIDEOS_DIR /
+            filename
+        )
+
         try:
-            destination.unlink(missing_ok=True)
-        except Exception:
-            pass
 
-        return jsonify({
-            "error": str(e)
-        }), 500
+            video.save(
+                destination
+            )
+
+        except Exception as e:
+
+            try:
+                destination.unlink(
+                    missing_ok=True
+                )
+            except Exception:
+                pass
+
+            return jsonify({
+                "error":
+                str(e)
+            }), 500
+
+        video_url = (
+            f"/uploads/videos/{filename}"
+        )
+
+    now = datetime.now().isoformat(
+        timespec="seconds"
+    )
 
     episode = {
 
@@ -1600,17 +2098,13 @@ def create_episode():
         f"Episode {ep_number}",
 
         "video":
-        f"/uploads/videos/{filename}",
+        video_url,
 
         "created_at":
-        datetime.now().isoformat(
-            timespec="seconds"
-        ),
+        now,
 
         "updated_at":
-        datetime.now().isoformat(
-            timespec="seconds"
-        )
+        now
     }
 
     data["episodes"].append(
@@ -1622,7 +2116,9 @@ def create_episode():
         drama_id
     )
 
-    save_catalog(data)
+    save_catalog(
+        data
+    )
 
     record_activity(
         "episode_added",
@@ -1635,6 +2131,7 @@ def create_episode():
     return jsonify(
         episode
     ), 201
+
 
 
 
@@ -2173,57 +2670,44 @@ def upload_drama_cover(drama_id):
 @admin_required
 def upload_cover():
 
-    image = request.files.get(
-        "cover"
-    )
+    image = request.files.get("cover")
 
     if not image:
+        return jsonify({"error": "No cover image supplied"}), 400
 
+    if not allowed_image(image.filename):
         return jsonify({
-            "error":
-            "No cover image supplied"
+            "error": "Only JPG, JPEG, PNG and WEBP images are allowed"
         }), 400
 
-    if not allowed_image(
-        image.filename
-    ):
+    extension = Path(image.filename).suffix.lower()
+    filename = f"{uuid.uuid4().hex}{extension}"
+    key = f"covers/{filename}"
+
+    try:
+        r2.upload_fileobj(
+            image,
+            R2_BUCKET_NAME,
+            key,
+            ExtraArgs={
+                "ContentType": image.content_type or "application/octet-stream"
+            }
+        )
+
+        url = f"{R2_PUBLIC_URL}/{key}"
+
+        record_activity("cover_uploaded", filename)
 
         return jsonify({
-            "error":
-            "Only JPG, JPEG, PNG and WEBP images are allowed"
-        }), 400
+            "ok": True,
+            "url": url,
+            "filename": filename
+        })
 
-    extension = (
-        Path(
-            image.filename
-        ).suffix.lower()
-    )
-
-    filename = (
-        f"{uuid.uuid4().hex}"
-        f"{extension}"
-    )
-
-    destination = (
-        COVERS_DIR / filename
-    )
-
-    image.save(
-        destination
-    )
-
-    record_activity(
-        "cover_uploaded",
-        filename
-    )
-
-    return jsonify({
-        "ok": True,
-        "url":
-        f"/uploads/covers/{filename}",
-        "filename":
-        filename
-    })
+    except Exception as e:
+        return jsonify({
+            "error": f"R2 upload failed: {str(e)}"
+        }), 500
 
 
 # =========================================================

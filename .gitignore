@@ -4,7 +4,6 @@
 admin_config.json
 
 # Runtime / generated data
-data/
 uploads/
 __pycache__/
 *.pyc
@@ -86,3 +85,5 @@ package-lock.json
 .secret_key
 admin_config.json
 *.backup
+.vercel
+.env*

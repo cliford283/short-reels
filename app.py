@@ -880,6 +880,31 @@ def clear_login_failures(ip):
 # ADMIN AUTH
 # =========================================================
 
+@app.route("/api/admin/config-check")
+def admin_config_check():
+    username = os.environ.get("ADMIN_USERNAME", "").strip()
+    email = os.environ.get("ADMIN_EMAIL", "").strip()
+    password_hash = os.environ.get("ADMIN_PASSWORD_HASH", "").strip()
+
+    hash_valid = False
+    hash_error = ""
+
+    if password_hash:
+        try:
+            check_password_hash(password_hash, "")
+            hash_valid = True
+        except Exception as exc:
+            hash_error = type(exc).__name__
+
+    return jsonify({
+        "username_configured": bool(username),
+        "email_configured": bool(email),
+        "password_hash_configured": bool(password_hash),
+        "password_hash_valid": hash_valid,
+        "password_hash_error": hash_error
+    })
+
+
 @app.route(
     "/api/admin/login",
     methods=["POST"]
@@ -893,30 +918,20 @@ def admin_login():
             "error": "Too many failed login attempts. Please try again later."
         }), 429
 
+    admin_username = os.environ.get("ADMIN_USERNAME", "").strip()
+    admin_email = os.environ.get("ADMIN_EMAIL", "").strip()
+    admin_password_hash = os.environ.get("ADMIN_PASSWORD_HASH", "").strip()
+
+    if not admin_username or not admin_email or not admin_password_hash:
+        return jsonify({
+            "error": "Admin environment variables are not configured."
+        }), 500
+
     admin = {
-        "username": os.environ.get("ADMIN_USERNAME", ""),
-        "email": os.environ.get("ADMIN_EMAIL", ""),
-        "password_hash": os.environ.get("ADMIN_PASSWORD_HASH", "")
+        "username": admin_username,
+        "email": admin_email,
+        "password_hash": admin_password_hash
     }
-
-    if not all(admin.values()):
-        if not ADMIN_FILE.exists():
-            return jsonify({
-                "error":
-                "Admin configuration is missing."
-            }), 500
-
-        try:
-            admin = json.loads(
-                ADMIN_FILE.read_text(
-                    encoding="utf-8"
-                )
-            )
-        except Exception:
-            return jsonify({
-                "error":
-                "Admin configuration is invalid."
-            }), 500
 
     body = request.get_json(
         silent=True
@@ -942,10 +957,16 @@ def admin_login():
         ).lower()
     )
 
-    valid_password = check_password_hash(
-        admin.get("password_hash", ""),
-        password
-    )
+    try:
+        valid_password = check_password_hash(
+            admin.get("password_hash", ""),
+            password
+        )
+    except Exception as exc:
+        return jsonify({
+            "error": "Password verification failed.",
+            "diagnostic": type(exc).__name__
+        }), 500
 
     if not valid_identity or not valid_password:
 

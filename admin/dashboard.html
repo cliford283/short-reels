@@ -74,6 +74,7 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px 10p
 <div class="actions">
 <button class="btn red" onclick="openDrama()">+ Add Drama</button>
 <button class="btn red" onclick="openEpisode()">+ Add Episode / Video</button>
+<button class="btn" onclick="openEpisodeCreator()">Episode Creator</button>
 </div>
 <div class="panel"><h2>Recent episodes</h2><div id="recent"></div></div>
 </section>
@@ -385,8 +386,298 @@ a payment provider before you start charging users.
 </div>
 
 <!-- EPISODE + VIDEO -->
-<button class="btn" onclick="openBulkEpisode()" style="margin-bottom:12px">Bulk Episodes</button>
+<button class="btn" onclick="openEpisodeCreator()" style="margin-bottom:12px">
+ Episode Creator
+</button>
 
+<button class="btn" onclick="openBulkEpisode()" style="margin-bottom:12px">
+ Bulk Episodes
+</button>
+
+
+
+<div id="episodeCreatorModal" class="modal">
+ <div class="box" style="max-width:1050px">
+
+  <div class="box-head">
+   <h2>Episode Creator</h2>
+   <button class="close" onclick="closeM('episodeCreatorModal')">×</button>
+  </div>
+
+  <div class="form">
+
+   <div class="field">
+    <label>DRAMA</label>
+    <select id="creatorDrama"></select>
+   </div>
+
+   <div class="field">
+    <label>FULL SOURCE VIDEO</label>
+
+    <input
+     type="file"
+     id="creatorSource"
+     accept="video/*"
+     onchange="creatorLoadVideo(this)"
+    >
+
+    <div
+     id="creatorVideoBox"
+     style="margin-top:12px;background:#050505;border-radius:8px;overflow:hidden;display:none"
+    >
+     <video
+      id="creatorVideo"
+      controls
+      playsinline
+      preload="metadata"
+      style="display:block;width:100%;max-height:430px;background:#000"
+     ></video>
+    </div>
+   </div>
+
+   <div
+    id="creatorEditor"
+    style="display:none;margin-top:18px"
+   >
+
+    <div
+     style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px"
+    >
+     <div>
+      <b>Episode range</b>
+      <div class="muted" style="margin-top:4px">
+       Drag the handles or enter exact times.
+      </div>
+     </div>
+
+     <div
+      id="creatorTimeLabel"
+      style="font-weight:700"
+     >
+      00:00 → 00:00
+     </div>
+    </div>
+
+    <div
+     id="creatorTimeline"
+     style="
+      position:relative;
+      height:70px;
+      background:#111;
+      border:1px solid #333;
+      border-radius:8px;
+      overflow:hidden;
+      user-select:none;
+      touch-action:none;
+     "
+    >
+
+     <div
+      id="creatorTimelineTrack"
+      style="
+       position:absolute;
+       left:0;
+       right:0;
+       top:29px;
+       height:12px;
+       background:#292929;
+       border-radius:10px;
+      "
+     ></div>
+
+     <div
+      id="creatorSelection"
+      style="
+       position:absolute;
+       top:25px;
+       height:20px;
+       background:#fff;
+       opacity:.25;
+       border-radius:4px;
+       pointer-events:none;
+      "
+     ></div>
+
+     <div
+      class="creatorHandle"
+      id="creatorStartHandle"
+      data-handle="start"
+      style="
+       position:absolute;
+       top:16px;
+       width:18px;
+       height:38px;
+       margin-left:-9px;
+       background:#fff;
+       border-radius:5px;
+       cursor:ew-resize;
+       z-index:5;
+      "
+     ></div>
+
+     <div
+      class="creatorHandle"
+      id="creatorEndHandle"
+      data-handle="end"
+      style="
+       position:absolute;
+       top:16px;
+       width:18px;
+       height:38px;
+       margin-left:-9px;
+       background:#fff;
+       border-radius:5px;
+       cursor:ew-resize;
+       z-index:5;
+      "
+     ></div>
+    </div>
+
+    <div
+     style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+     "
+    >
+
+     <div class="field">
+      <label>START TIME</label>
+      <input
+       id="creatorStart"
+       type="text"
+       value="00:00"
+       placeholder="00:00"
+       onchange="creatorTimeInput()"
+      >
+     </div>
+
+     <div class="field">
+      <label>END TIME</label>
+      <input
+       id="creatorEnd"
+       type="text"
+       value="00:00"
+       placeholder="00:00"
+       onchange="creatorTimeInput()"
+      >
+     </div>
+
+    </div>
+
+    <div
+     style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+     "
+    >
+
+     <div class="field">
+      <label>EPISODE NUMBER</label>
+      <input id="creatorNumber" type="number" min="1" value="1">
+     </div>
+
+     <div class="field">
+      <label>EPISODE TITLE</label>
+      <input id="creatorTitle" placeholder="Episode 1">
+     </div>
+
+    </div>
+
+    <div class="field">
+     <label>THUMBNAIL</label>
+
+     <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+
+      <button
+       class="btn"
+       type="button"
+       onclick="creatorCaptureThumbnail()"
+      >
+       Capture From Start
+      </button>
+
+      <div
+       id="creatorThumbnailPreview"
+       style="
+        width:110px;
+        height:62px;
+        background:#111;
+        border:1px solid #333;
+        border-radius:6px;
+        overflow:hidden;
+       "
+      ></div>
+
+     </div>
+    </div>
+
+    <div class="actions">
+
+     <button
+      class="btn"
+      type="button"
+      onclick="creatorPreviewSelection()"
+     >
+      Preview Segment
+     </button>
+
+     <button
+      class="btn"
+      type="button"
+      onclick="creatorAddSegment()"
+     >
+      + Add Episode
+     </button>
+     
+     <button
+      class="btn"
+      id="creatorAutoSplitBtn"
+      type="button"
+      onclick="creatorAutoSplit()"
+     >
+      Auto Split 2:30
+     </button>
+
+    </div>
+
+    <div
+     id="creatorSegments"
+     style="margin-top:18px"
+    ></div>
+
+    <div
+     id="creatorUploadProgress"
+     class="muted"
+     style="margin-top:15px"
+    ></div>
+
+    <div class="actions" style="margin-top:18px">
+
+     <button
+      class="btn"
+      onclick="closeM('episodeCreatorModal')"
+     >
+      Cancel
+     </button>
+
+     <button
+      class="btn red"
+      id="creatorPublishBtn"
+      onclick="creatorCreateEpisodes()"
+     >
+      Create Episodes
+     </button>
+
+    </div>
+
+   </div>
+
+  </div>
+ </div>
+</div>
 
 <div id="bulkEpisodeModal" class="modal">
  <div class="box">
@@ -926,64 +1217,968 @@ async function saveBulkEpisodes(){
  }
 }
 
+
+/* =========================================================
+   VISUAL EPISODE CREATOR
+   ========================================================= */
+
+let creatorSourceFile = null;
+let creatorDuration = 0;
+let creatorStartTime = 0;
+let creatorEndTime = 0;
+let creatorSegments = [];
+let creatorDragging = null;
+let creatorThumbnailData = "";
+
+function creatorFormatTime(seconds){
+
+ seconds = Math.max(0, Number(seconds) || 0);
+
+ let h = Math.floor(seconds / 3600);
+ let m = Math.floor((seconds % 3600) / 60);
+ let s = Math.floor(seconds % 60);
+
+ if(h > 0){
+  return String(h).padStart(2,"0") + ":" +
+         String(m).padStart(2,"0") + ":" +
+         String(s).padStart(2,"0");
+ }
+
+ return String(m).padStart(2,"0") + ":" +
+        String(s).padStart(2,"0");
+}
+
+function creatorParseTime(value){
+
+ value=String(value||"").trim();
+
+ if(!value) return NaN;
+
+ let parts=value.split(":").map(Number);
+
+ if(parts.some(Number.isNaN)) return NaN;
+
+ if(parts.length===1) return parts[0];
+
+ if(parts.length===2)
+  return parts[0]*60+parts[1];
+
+ if(parts.length===3)
+  return parts[0]*3600+parts[1]*60+parts[2];
+
+ return NaN;
+}
+
+function openEpisodeCreator(){
+
+ creatorSourceFile=null;
+ creatorDuration=0;
+ creatorStartTime=0;
+ creatorEndTime=0;
+ creatorSegments=[];
+ creatorDragging=null;
+ creatorThumbnailData="";
+
+ $("creatorDrama").innerHTML=
+  '<option value="">Select drama</option>'+
+  dramas.map(d=>
+   `<option value="${esc(d.id)}">${esc(d.title)}</option>`
+  ).join("");
+
+ $("creatorSource").value="";
+ $("creatorVideo").removeAttribute("src");
+ $("creatorVideo").load();
+
+ $("creatorVideoBox").style.display="none";
+ $("creatorEditor").style.display="none";
+
+ $("creatorSegments").innerHTML="";
+ $("creatorUploadProgress").textContent="";
+ $("creatorThumbnailPreview").innerHTML="";
+
+ $("creatorModal")?.classList.remove("show");
+ $("episodeCreatorModal").classList.add("show");
+}
+
+function creatorLoadVideo(input){
+
+ const file=input.files?.[0];
+
+ if(!file) return;
+
+ if(!file.type.startsWith("video/")){
+  alert("Please select a video file.");
+  return;
+ }
+
+ creatorSourceFile=file;
+
+ const video=$("creatorVideo");
+
+ video.src=URL.createObjectURL(file);
+ video.load();
+
+ $("creatorVideoBox").style.display="block";
+
+ video.onloadedmetadata=()=>{
+
+  creatorDuration=video.duration;
+
+  if(!Number.isFinite(creatorDuration) || creatorDuration<=0){
+   alert("Could not read the video duration.");
+   return;
+  }
+
+  creatorStartTime=0;
+  creatorEndTime=creatorDuration;
+
+  $("creatorStart").value=creatorFormatTime(0);
+  $("creatorEnd").value=creatorFormatTime(creatorDuration);
+
+  $("creatorNumber").value=
+   creatorNextEpisodeNumber();
+
+  $("creatorTitle").value=
+   "Episode "+$("creatorNumber").value;
+
+  $("creatorEditor").style.display="block";
+
+  creatorUpdateTimeline();
+  creatorUpdateLabel();
+ };
+}
+
+
+async function creatorAutoSplit(){
+
+ if(!creatorDuration){
+  alert("Load a source video first.");
+  return;
+ }
+
+ const drama=$("creatorDrama").value;
+
+ if(!drama){
+  alert("Select a drama first.");
+  return;
+ }
+
+ const btn=$("creatorAutoSplitBtn");
+
+ if(btn){
+  btn.disabled=true;
+  btn.textContent="Calculating...";
+ }
+
+ try{
+
+  const result=await api(
+   "/api/episode-creator/auto-segments",
+   {
+    method:"POST",
+    headers:{
+     "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+     drama_id:drama,
+     duration:creatorDuration
+    })
+   }
+  );
+
+  if(!result.ok){
+   throw new Error(
+    result.error ||
+    "Could not create automatic segments."
+   );
+  }
+
+  creatorSegments=(result.segments||[]).map(x=>({
+   number:Number(x.number),
+   title:x.title || `Episode ${x.number}`,
+   start:Number(x.start),
+   end:Number(x.end),
+   thumbnail:""
+  }));
+
+  creatorRenderSegments();
+
+  if(creatorSegments.length){
+
+   const first=creatorSegments[0];
+
+   creatorStartTime=first.start;
+   creatorEndTime=first.end;
+
+   $("creatorNumber").value=first.number;
+   $("creatorTitle").value=first.title;
+
+   creatorThumbnailData="";
+   $("creatorThumbnailPreview").innerHTML="";
+
+   creatorUpdateTimeline();
+
+  }
+
+  $("creatorUploadProgress").textContent=
+   `Automatic split ready ✓ — ${result.count} episode(s)`;
+
+ }catch(e){
+
+  alert(
+   e.message ||
+   "Automatic split failed."
+  );
+
+ }finally{
+
+  if(btn){
+   btn.disabled=false;
+   btn.textContent="Auto Split 2:30";
+  }
+
+ }
+}
+
+function creatorNextEpisodeNumber(){
+
+ if(!creatorSegments.length) return 1;
+
+ return Math.max(
+  ...creatorSegments.map(x=>Number(x.number)||0)
+ )+1;
+}
+
+function creatorUpdateTimeline(){
+
+ if(!creatorDuration) return;
+
+ const startPct=
+  Math.max(
+   0,
+   Math.min(100, creatorStartTime/creatorDuration*100)
+  );
+
+ const endPct=
+  Math.max(
+   0,
+   Math.min(100, creatorEndTime/creatorDuration*100)
+  );
+
+ $("creatorStartHandle").style.left=startPct+"%";
+ $("creatorEndHandle").style.left=endPct+"%";
+
+ $("creatorSelection").style.left=startPct+"%";
+ $("creatorSelection").style.width=
+  Math.max(0,endPct-startPct)+"%";
+
+ creatorUpdateLabel();
+}
+
+function creatorUpdateLabel(){
+
+ $("creatorTimeLabel").textContent=
+  creatorFormatTime(creatorStartTime)+
+  " → "+
+  creatorFormatTime(creatorEndTime);
+
+ $("creatorStart").value=
+  creatorFormatTime(creatorStartTime);
+
+ $("creatorEnd").value=
+  creatorFormatTime(creatorEndTime);
+}
+
+function creatorSetFromPosition(clientX){
+
+ const box=$("creatorTimeline");
+ const rect=box.getBoundingClientRect();
+
+ let pct=(clientX-rect.left)/rect.width;
+
+ pct=Math.max(0,Math.min(1,pct));
+
+ const time=pct*creatorDuration;
+
+ if(creatorDragging==="start"){
+
+  creatorStartTime=Math.min(
+   time,
+   Math.max(0,creatorEndTime-0.1)
+  );
+
+ }else if(creatorDragging==="end"){
+
+  creatorEndTime=Math.max(
+   time,
+   Math.min(
+    creatorDuration,
+    creatorStartTime+0.1
+   )
+  );
+ }
+
+ creatorUpdateTimeline();
+}
+
+function creatorStartDrag(which,event){
+
+ event.preventDefault();
+
+ creatorDragging=which;
+
+ creatorSetFromPosition(
+  event.clientX ??
+  event.touches?.[0]?.clientX
+ );
+}
+
+function creatorPointerMove(event){
+
+ if(!creatorDragging) return;
+
+ const x=
+  event.clientX ??
+  event.touches?.[0]?.clientX;
+
+ if(x==null) return;
+
+ creatorSetFromPosition(x);
+}
+
+function creatorStopDrag(){
+
+ creatorDragging=null;
+}
+
+function creatorTimeInput(){
+
+ if(!creatorDuration) return;
+
+ let start=creatorParseTime(
+  $("creatorStart").value
+ );
+
+ let end=creatorParseTime(
+  $("creatorEnd").value
+ );
+
+ if(!Number.isFinite(start) || !Number.isFinite(end)){
+  alert("Use MM:SS or HH:MM:SS.");
+  creatorUpdateLabel();
+  return;
+ }
+
+ start=Math.max(
+  0,
+  Math.min(start,creatorDuration)
+ );
+
+ end=Math.max(
+  0,
+  Math.min(end,creatorDuration)
+ );
+
+ if(end<=start){
+  alert("End time must be after start time.");
+  return;
+ }
+
+ creatorStartTime=start;
+ creatorEndTime=end;
+
+ creatorUpdateTimeline();
+}
+
+function creatorPreviewSelection(){
+
+ const video=$("creatorVideo");
+
+ if(!video || !creatorDuration) return;
+
+ video.currentTime=creatorStartTime;
+ video.play();
+
+ const stop=()=>{
+
+  if(video.currentTime>=creatorEndTime){
+
+   video.pause();
+   video.removeEventListener(
+    "timeupdate",
+    stop
+   );
+  }
+ };
+
+ video.addEventListener(
+  "timeupdate",
+  stop
+ );
+}
+
+function creatorCaptureThumbnail(){
+
+ const video=$("creatorVideo");
+
+ if(!video || !creatorDuration){
+  alert("Load a source video first.");
+  return;
+ }
+
+ const canvas=document.createElement("canvas");
+
+ const width=640;
+
+ const ratio=
+  video.videoWidth && video.videoHeight
+   ? video.videoHeight/video.videoWidth
+   : 9/16;
+
+ canvas.width=width;
+ canvas.height=Math.round(width*ratio);
+
+ const ctx=canvas.getContext("2d");
+
+ const oldTime=video.currentTime;
+
+ video.currentTime=creatorStartTime;
+
+ const draw=()=>{
+
+  try{
+
+   ctx.drawImage(
+    video,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+   );
+
+   creatorThumbnailData=
+    canvas.toDataURL("image/jpeg",.82);
+
+   $("creatorThumbnailPreview").innerHTML=
+    `<img
+      src="${creatorThumbnailData}"
+      style="width:100%;height:100%;object-fit:cover"
+     >`;
+
+  }catch(e){
+
+   console.error(e);
+  }
+
+  video.currentTime=oldTime;
+ };
+
+ video.addEventListener(
+  "seeked",
+  draw,
+  {once:true}
+ );
+}
+
+function creatorAddSegment(){
+
+ if(!creatorDuration){
+  alert("Load a source video first.");
+  return;
+ }
+
+ if(creatorEndTime<=creatorStartTime){
+  alert("Choose a valid range.");
+  return;
+ }
+
+ const number=
+  Number($("creatorNumber").value);
+
+ if(!number || number<1){
+  alert("Enter a valid episode number.");
+  return;
+ }
+
+ const title=
+  $("creatorTitle").value.trim() ||
+  `Episode ${number}`;
+
+ const overlap=creatorSegments.some(x=>
+  Number(x.number)===number
+ );
+
+ if(overlap){
+  alert(`Episode ${number} is already added.`);
+  return;
+ }
+
+ creatorSegments.push({
+  number,
+  title,
+  start:creatorStartTime,
+  end:creatorEndTime,
+  thumbnail:creatorThumbnailData || ""
+ });
+
+ creatorSegments.sort(
+  (a,b)=>a.number-b.number
+ );
+
+ creatorRenderSegments();
+
+ const next=creatorNextEpisodeNumber();
+
+ $("creatorNumber").value=next;
+ $("creatorTitle").value=`Episode ${next}`;
+
+ creatorThumbnailData="";
+ $("creatorThumbnailPreview").innerHTML="";
+}
+
+function creatorRemoveSegment(index){
+
+ creatorSegments.splice(index,1);
+
+ creatorRenderSegments();
+}
+
+function creatorEditSegment(index){
+
+ const segment=creatorSegments[index];
+
+ if(!segment) return;
+
+ creatorStartTime=segment.start;
+ creatorEndTime=segment.end;
+
+ $("creatorNumber").value=segment.number;
+ $("creatorTitle").value=segment.title;
+
+ creatorThumbnailData=segment.thumbnail||"";
+
+ $("creatorThumbnailPreview").innerHTML=
+  creatorThumbnailData
+   ? `<img src="${creatorThumbnailData}" style="width:100%;height:100%;object-fit:cover">`
+   : "";
+
+ creatorUpdateTimeline();
+
+ $("creatorVideo").currentTime=segment.start;
+}
+
+function creatorRenderSegments(){
+
+ const box=$("creatorSegments");
+
+ if(!creatorSegments.length){
+
+  box.innerHTML=
+   '<div class="empty">No episode segments yet.</div>';
+
+  return;
+ }
+
+ box.innerHTML=`
+  <div style="font-weight:700;margin-bottom:8px">
+   Episodes to create
+  </div>
+
+  ${creatorSegments.map((x,i)=>`
+
+   <div
+    style="
+     display:flex;
+     gap:12px;
+     align-items:center;
+     padding:10px;
+     margin-bottom:8px;
+     background:#111;
+     border:1px solid #2c2c2c;
+     border-radius:7px;
+    "
+   >
+
+    ${
+     x.thumbnail
+      ? `<img
+          src="${x.thumbnail}"
+          style="width:90px;height:50px;object-fit:cover;border-radius:5px"
+         >`
+      : `<div
+          style="
+           width:90px;
+           height:50px;
+           background:#222;
+           border-radius:5px;
+          "
+         ></div>`
+    }
+
+    <div style="flex:1">
+
+     <b>
+      EP ${esc(x.number)} — ${esc(x.title)}
+     </b>
+
+     <div class="muted" style="margin-top:4px">
+      ${creatorFormatTime(x.start)}
+      →
+      ${creatorFormatTime(x.end)}
+      ·
+      ${creatorFormatTime(x.end-x.start)}
+     </div>
+
+    </div>
+
+    <button
+     class="btn"
+     onclick="creatorEditSegment(${i})"
+    >
+     Edit
+    </button>
+
+    <button
+     class="btn danger"
+     onclick="creatorRemoveSegment(${i})"
+    >
+     Remove
+    </button>
+
+   </div>
+
+  `).join("")}
+ `;
+}
+
+async function creatorUploadSource(){
+
+ if(!creatorSourceFile){
+  throw new Error("Source video is missing.");
+ }
+
+ const presign=await api(
+  "/api/episode-creator/presign",
+  {
+   method:"POST",
+   headers:{
+    "Content-Type":"application/json"
+   },
+   body:JSON.stringify({
+    filename:creatorSourceFile.name,
+    content_type:
+     creatorSourceFile.type ||
+     "application/octet-stream"
+   })
+  }
+ );
+
+ if(!presign.upload_url){
+  throw new Error("Could not prepare R2 upload.");
+ }
+
+ $("creatorUploadProgress").textContent=
+  "Uploading source video to R2...";
+
+ const response=await fetch(
+  presign.upload_url,
+  {
+   method:"PUT",
+   headers:{
+    "Content-Type":
+     creatorSourceFile.type ||
+     "application/octet-stream"
+   },
+   body:creatorSourceFile
+  }
+ );
+
+ if(!response.ok){
+  throw new Error(
+   "R2 source upload failed: HTTP "+
+   response.status
+  );
+ }
+
+ return presign;
+}
+
+async function creatorCreateEpisodes(){
+
+ const btn=$("creatorPublishBtn");
+
+ if(!creatorSourceFile){
+  alert("Select a full source video first.");
+  return;
+ }
+
+ const drama=$("creatorDrama").value;
+
+ if(!drama){
+  alert("Select a drama.");
+  return;
+ }
+
+ if(!creatorSegments.length){
+  alert("Add at least one episode segment.");
+  return;
+ }
+
+ btn.disabled=true;
+ btn.textContent="Uploading source...";
+
+ try{
+
+  const source=await creatorUploadSource();
+
+  $("creatorUploadProgress").textContent=
+   "Creating episode processing job...";
+
+  btn.textContent="Creating job...";
+
+  const result=await api(
+   "/api/episode-creator/job",
+   {
+    method:"POST",
+    headers:{
+     "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+     drama_id:drama,
+     source_key:source.key,
+     source_url:source.url,
+     segments:creatorSegments
+    })
+   }
+  );
+
+  $("creatorUploadProgress").textContent=
+   `Job queued ✓ — ${creatorSegments.length} episode(s)`;
+
+  btn.textContent="Job queued ✓";
+
+  setTimeout(()=>{
+   closeM("episodeCreatorModal");
+   load();
+  },1200);
+
+ }catch(e){
+
+  $("creatorUploadProgress").textContent=
+   e.message||"Episode creation failed.";
+
+  alert(
+   e.message||
+   "Episode creation failed."
+  );
+
+ }finally{
+
+  btn.disabled=false;
+  btn.textContent="Create Episodes";
+ }
+}
+
+(function(){
+
+ const start=$("creatorStartHandle");
+ const end=$("creatorEndHandle");
+
+ if(!start || !end) return;
+
+ start.addEventListener(
+  "pointerdown",
+  e=>creatorStartDrag("start",e)
+ );
+
+ end.addEventListener(
+  "pointerdown",
+  e=>creatorStartDrag("end",e)
+ );
+
+ document.addEventListener(
+  "pointermove",
+  creatorPointerMove
+ );
+
+ document.addEventListener(
+  "pointerup",
+  creatorStopDrag
+ );
+
+})();
+
+
 async function saveEpisode(){
+
  const btn=document.querySelector("#episodeModal .btn.red");
  const original=btn?btn.textContent:"Publish Episode";
 
  try{
-  if(!$("episodeDrama").value){alert("Select a drama");return}
-  const f=$("episodeVideo").files[0];
-  if(!f){alert("Please choose a video file");return}
 
-  const fd=new FormData();
-  fd.append("drama_id",$("episodeDrama").value);
-  fd.append("number",$("episodeNumber").value);
-  fd.append("title",$("episodeTitle").value.trim());
-  fd.append("video",f);
+  const dramaId=$("episodeDrama").value;
+  const number=$("episodeNumber").value;
+  const title=$("episodeTitle").value.trim();
+  const file=$("episodeVideo").files[0];
+  const episodeId=$("episodeId").value.trim();
 
-  if(btn){btn.disabled=true;btn.textContent="Uploading: 0%";}
+  if(!dramaId){
+   alert("Select a drama");
+   return;
+  }
 
-  const url=$("episodeId").value
-   ?"/api/episodes/"+encodeURIComponent($("episodeId").value)
-   :"/api/episodes";
-  const method=$("episodeId").value?"PUT":"POST";
+  if(!number){
+   alert("Enter an episode number");
+   return;
+  }
 
-  await new Promise(async (resolve,reject)=>{
+  if(!file){
+   alert("Please choose a video file");
+   return;
+  }
+
+  if(btn){
+   btn.disabled=true;
+   btn.textContent="Preparing upload...";
+  }
+
+  /* Get a temporary R2 upload URL. */
+  const signed=await api("/api/episodes/presign",{
+   method:"POST",
+   headers:{
+    "Content-Type":"application/json"
+   },
+   body:JSON.stringify({
+    filename:file.name,
+    content_type:file.type||"video/mp4",
+    size:file.size
+   })
+  });
+
+  if(!signed.upload_url){
+   throw Error("Could not prepare video upload");
+  }
+
+  /*
+   * Upload the actual video directly to Cloudflare R2.
+   * Flask does not receive the video bytes.
+   */
+  await new Promise((resolve,reject)=>{
+
    const x=new XMLHttpRequest();
-   x.open(method,url);
-   x.withCredentials=true;
-   if(!csrfToken) await getCsrfToken();
-   x.setRequestHeader("X-CSRF-Token", csrfToken);
+
+   x.open("PUT",signed.upload_url,true);
+
+   x.setRequestHeader(
+    "Content-Type",
+    signed.content_type ||
+    file.type ||
+    "video/mp4"
+   );
 
    x.upload.onprogress=e=>{
-    if(e.lengthComputable&&btn){
-     btn.textContent="Uploading: "+Math.round(e.loaded/e.total*100)+"%";
+
+    if(e.lengthComputable && btn){
+
+     const pct=Math.round(
+      e.loaded/e.total*100
+     );
+
+     btn.textContent=
+      "Uploading: "+pct+"%";
     }
    };
 
-   x.upload.onload=()=>{
-    if(btn)btn.textContent="Processing video...";
-   };
-
    x.onload=()=>{
-    let j={};
-    try{j=JSON.parse(x.responseText||"{}")}catch{}
-    if(x.status>=200&&x.status<300)resolve(j);
-    else reject(Error(j.error||"Request failed"));
+
+    if(x.status>=200 && x.status<300){
+
+     resolve();
+
+    }else{
+
+     reject(
+      Error(
+       "Video upload failed ("+
+       x.status+
+       ")"
+      )
+     );
+    }
    };
 
-   x.onerror=()=>reject(Error("Upload failed"));
-   x.onabort=()=>reject(Error("Upload cancelled"));
-   x.send(fd);
+   x.onerror=()=>reject(
+    Error("Video upload failed")
+   );
+
+   x.onabort=()=>reject(
+    Error("Upload cancelled")
+   );
+
+   x.send(file);
   });
 
-  if(btn)btn.textContent="Published ✓";
+  if(btn){
+   btn.textContent="Saving episode...";
+  }
+
+  /*
+   * Only the small metadata request goes through Flask.
+   */
+  if(episodeId){
+
+   await api(
+    "/api/episodes/"+
+    encodeURIComponent(episodeId),
+    {
+     method:"PUT",
+     headers:{
+      "Content-Type":"application/json"
+     },
+     body:JSON.stringify({
+      number:number,
+      title:title,
+      video_key:signed.key
+     })
+    }
+   );
+
+  }else{
+
+   await api(
+    "/api/episodes",
+    {
+     method:"POST",
+     headers:{
+      "Content-Type":"application/json"
+     },
+     body:JSON.stringify({
+      drama_id:dramaId,
+      number:number,
+      title:title,
+      video_key:signed.key
+     })
+    }
+   );
+  }
+
+  if(btn){
+   btn.textContent="Published ✓";
+  }
+
   closeM("episodeModal");
+
   await load();
 
  }catch(e){
-  alert(e.message||"Upload failed");
+
+  alert(
+   e.message ||
+   "Upload failed"
+  );
+
  }finally{
+
   if(btn){
    btn.disabled=false;
    btn.textContent=original;

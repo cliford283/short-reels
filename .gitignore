@@ -87,3 +87,5 @@ admin_config.json
 *.backup
 .vercel
 .env*
+
+ffmpeg-test/

@@ -1882,6 +1882,53 @@ window.addEventListener('load', function(){
     padding:11px;
   }
 }
+
+
+
+
+/* ===== REELS FULLSCREEN PLAYER ===== */
+html.dh-reels-fullscreen,
+html.dh-reels-fullscreen body{
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+}
+
+html.dh-reels-fullscreen #app{
+  position:fixed!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  overflow:hidden!important;
+  background:#000!important;
+}
+
+html.dh-reels-fullscreen .pl{
+  position:absolute!important;
+  top:50%!important;
+  left:50%!important;
+  transform:translate(-50%,-50%)!important;
+  width:min(100vw,56.25vh)!important;
+  height:min(177.7778vw,100vh)!important;
+  max-width:none!important;
+  max-height:none!important;
+  aspect-ratio:9/16!important;
+  margin:0!important;
+  overflow:hidden!important;
+  background:#000!important;
+}
+
+html.dh-reels-fullscreen .pl video{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+}
+
 </style>
 
 <div id="sr-cookie-consent-v2">
@@ -1931,6 +1978,126 @@ window.addEventListener('load', function(){
     notice.remove();
   });
 })();
+
+
+
+
+
+
+
+
+/* ===== ANDROID REELS FULLSCREEN ===== */
+(function(){
+
+  let reelsFullscreen=false;
+
+  function isEpisodePage(){
+    return !!document.querySelector('.pl');
+  }
+
+  function lockPage(){
+    const active=isEpisodePage();
+    document.documentElement.classList.toggle(
+      'dh-reels-fullscreen',
+      active
+    );
+    return active;
+  }
+
+  async function enterReelsFullscreen(){
+    if(!isEpisodePage()) return;
+
+    lockPage();
+
+    try{
+      if(!document.fullscreenElement &&
+         document.documentElement.requestFullscreen){
+
+        await document.documentElement.requestFullscreen({
+          navigationUI:'hide'
+        });
+
+        reelsFullscreen=true;
+      }
+    }catch(e){
+      /* Chrome can reject fullscreen if there is no user gesture.
+         CSS lock remains active as fallback. */
+    }
+  }
+
+  async function exitReelsFullscreen(){
+    document.documentElement.classList.remove('dh-reels-fullscreen');
+
+    try{
+      if(document.fullscreenElement &&
+         document.exitFullscreen){
+        await document.exitFullscreen();
+      }
+    }catch(e){}
+
+    reelsFullscreen=false;
+  }
+
+  /*
+   * Enter fullscreen from the actual tap that opens an episode.
+   * This is important because Android Chrome requires user activation.
+   */
+  document.addEventListener('click',function(e){
+
+    const link=e.target.closest('a');
+
+    if(link){
+      const href=link.getAttribute('href') || '';
+
+      if(
+        href.includes('#/episode/') ||
+        href.includes('#/watch/') ||
+        href.includes('/episode/')
+      ){
+        setTimeout(enterReelsFullscreen,0);
+      }
+    }
+
+    if(e.target.closest('#nx,#pv')){
+      setTimeout(enterReelsFullscreen,0);
+    }
+  },true);
+
+  /*
+   * Also catch SPA route changes.
+   */
+  let lastRoute=location.hash;
+
+  setInterval(function(){
+    const routeChanged=location.hash!==lastRoute;
+
+    if(routeChanged){
+      lastRoute=location.hash;
+
+      if(isEpisodePage()){
+        lockPage();
+      }else if(reelsFullscreen){
+        exitReelsFullscreen();
+      }
+    }
+  },250);
+
+  document.addEventListener('fullscreenchange',function(){
+    if(isEpisodePage()){
+      lockPage();
+    }
+  });
+
+  window.addEventListener('resize',function(){
+    if(isEpisodePage()){
+      lockPage();
+    }
+  });
+
+  lockPage();
+
+})();
+
 </script>
 
 </body>

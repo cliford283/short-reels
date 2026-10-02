@@ -2009,411 +2009,694 @@ async function creatorCreateEpisodes(){
 })();
 
 
-async function saveEpisode(){
 
- const btn=document.querySelector("#episodeModal .btn.red");
- const original=btn?btn.textContent:"Publish Episode";
+/* =========================================================
+   DIRECT EPISODE VIDEO COMPRESSION
+   Browser -> 720p H.264 -> R2
+   ========================================================= */
 
- try{
+let episodeFFmpeg = null;
+let episodeFFmpegLoading = null;
 
-  const dramaId=$("episodeDrama").value;
-  const number=$("episodeNumber").value;
-  const title=$("episodeTitle").value.trim();
-  const file=$("episodeVideo").files[0];
-  const episodeId=$("episodeId").value.trim();
+async function getEpisodeFFmpeg(){
 
-  if(!dramaId){
-   alert("Select a drama");
-   return;
+  if(episodeFFmpeg && episodeFFmpeg.loaded){
+    return episodeFFmpeg;
   }
 
-  if(!number){
-   alert("Enter an episode number");
-   return;
+  if(episodeFFmpegLoading){
+    return episodeFFmpegLoading;
   }
+
+  episodeFFmpegLoading = (async()=>{
+
+    const { FFmpeg } =
+      await import(
+        "https://esm.sh/@ffmpeg/ffmpeg@0.12.15"
+      );
+
+    const { fetchFile, toBlobURL } =
+      await import(
+        "https://esm.sh/@ffmpeg/util@0.12.2"
+      );
+
+    const ffmpeg = new FFmpeg();
+
+    const baseURL =
+      "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd";
+
+    await ffmpeg.load({
+
+      coreURL:
+        await toBlobURL(
+          baseURL + "/ffmpeg-core.js",
+          "text/javascript"
+        ),
+
+      wasmURL:
+        await toBlobURL(
+          baseURL + "/ffmpeg-core.wasm",
+          "application/wasm"
+        )
+
+    });
+
+    ffmpeg.__fetchFile = fetchFile;
+
+    episodeFFmpeg = ffmpeg;
+
+    return ffmpeg;
+
+  })();
+
+  try{
+
+    return await episodeFFmpegLoading;
+
+  }finally{
+
+    episodeFFmpegLoading = null;
+
+  }
+}
+
+
+async function compressEpisodeVideo(file, onProgress){
 
   if(!file){
-   alert("Please choose a video file");
-   return;
-  }
-
-  if(btn){
-   btn.disabled=true;
-   btn.textContent="Preparing upload...";
-  }
-
-  /* Get a temporary R2 upload URL. */
-  const signed=await api("/api/episodes/presign",{
-   method:"POST",
-   headers:{
-    "Content-Type":"application/json"
-   },
-   body:JSON.stringify({
-    filename:file.name,
-    content_type:file.type||"video/mp4",
-    size:file.size
-   })
-  });
-
-  if(!signed.upload_url){
-   throw Error("Could not prepare video upload");
+    throw Error("No video selected");
   }
 
   /*
-   * Upload the actual video directly to Cloudflare R2.
-   * Flask does not receive the video bytes.
+   * Very small videos don't benefit enough from transcoding.
+   * Keep them untouched.
    */
-  await new Promise((resolve,reject)=>{
-
-   const x=new XMLHttpRequest();
-
-   x.open("PUT",signed.upload_url,true);
-
-   x.setRequestHeader(
-    "Content-Type",
-    signed.content_type ||
-    file.type ||
-    "video/mp4"
-   );
-
-   x.upload.onprogress=e=>{
-
-    if(e.lengthComputable && btn){
-
-     const pct=Math.round(
-      e.loaded/e.total*100
-     );
-
-     btn.textContent=
-      "Uploading: "+pct+"%";
+  if(file.size <= 25 * 1024 * 1024){
+    if(onProgress){
+      onProgress(100);
     }
-   };
 
-   x.onload=()=>{
+    return file;
+  }
 
-    if(x.status>=200 && x.status<300){
+  if(onProgress){
+    onProgress(0);
+  }
 
-     resolve();
+  const ffmpeg = await getEpisodeFFmpeg();
+
+  const fetchFile = ffmpeg.__fetchFile;
+
+  const inputName =
+    "episode_input_" +
+    Date.now() +
+    ".mp4";
+
+  const outputName =
+    "episode_output_" +
+    Date.now() +
+    ".mp4";
+
+  /*
+   * Track FFmpeg progress.
+   */
+  const progressHandler = ({progress})=>{
+
+    if(typeof progress === "number" && onProgress){
+
+      const pct =
+        Math.max(
+          0,
+          Math.min(
+            100,
+            Math.round(progress * 100)
+          )
+        );
+
+      onProgress(pct);
+    }
+  };
+
+  ffmpeg.on("progress", progressHandler);
+
+  try{
+
+    await ffmpeg.writeFile(
+      inputName,
+      await fetchFile(file)
+    );
+
+    /*
+     * Maximum 1280px wide / 1280px tall.
+     *
+     * This means:
+     * 1920x1080 -> 1280x720
+     * 1080x1920 -> 720x1280
+     * 1280x720  -> 1280x720
+     *
+     * Full duration is preserved.
+     */
+    const result =
+      await ffmpeg.exec([
+
+        "-i",
+        inputName,
+
+        "-vf",
+        "scale=1280:1280:force_original_aspect_ratio=decrease",
+
+        "-c:v",
+        "libx264",
+
+        "-preset",
+        "veryfast",
+
+        "-crf",
+        "29",
+
+        "-maxrate",
+        "1400k",
+
+        "-bufsize",
+        "2800k",
+
+        "-pix_fmt",
+        "yuv420p",
+
+        "-c:a",
+        "aac",
+
+        "-b:a",
+        "96k",
+
+        "-movflags",
+        "+faststart",
+
+        outputName
+
+      ]);
+
+    if(result !== 0){
+      throw Error(
+        "Video compression failed"
+      );
+    }
+
+    const data =
+      await ffmpeg.readFile(outputName);
+
+    const compressed =
+      new Blob(
+        [data.buffer],
+        {
+          type:"video/mp4"
+        }
+      );
+
+    /*
+     * If compression somehow made the file bigger,
+     * use the original instead.
+     */
+    if(compressed.size >= file.size){
+
+      if(onProgress){
+        onProgress(100);
+      }
+
+      return file;
+    }
+
+    const originalMB =
+      file.size / 1024 / 1024;
+
+    const compressedMB =
+      compressed.size / 1024 / 1024;
+
+    const saved =
+      Math.max(
+        0,
+        Math.round(
+          (1 - compressed.size / file.size) * 100
+        )
+      );
+
+    console.log(
+      "Episode compression:",
+      originalMB.toFixed(1),
+      "MB ->",
+      compressedMB.toFixed(1),
+      "MB",
+      "(" + saved + "% smaller)"
+    );
+
+    if(onProgress){
+      onProgress(100);
+    }
+
+    return new File(
+      [compressed],
+      (
+        file.name
+          .replace(/\.[^.]+$/, "")
+        + "_720p.mp4"
+      ),
+      {
+        type:"video/mp4",
+        lastModified:Date.now()
+      }
+    );
+
+  }finally{
+
+    ffmpeg.off(
+      "progress",
+      progressHandler
+    );
+
+    try{
+      await ffmpeg.deleteFile(inputName);
+    }catch(e){}
+
+    try{
+      await ffmpeg.deleteFile(outputName);
+    }catch(e){}
+  }
+}
+
+
+async function saveEpisode(){
+
+  const btn =
+    document.querySelector(
+      "#episodeModal .btn.red"
+    );
+
+  const original =
+    btn
+      ? btn.textContent
+      : "Publish Episode";
+
+  try{
+
+    const dramaId =
+      $("episodeDrama").value;
+
+    const number =
+      $("episodeNumber").value;
+
+    const title =
+      $("episodeTitle").value.trim();
+
+    const originalFile =
+      $("episodeVideo").files[0];
+
+    const episodeId =
+      $("episodeId").value.trim();
+
+    if(!dramaId){
+      alert("Select a drama");
+      return;
+    }
+
+    if(!number){
+      alert("Enter an episode number");
+      return;
+    }
+
+    if(!originalFile){
+      alert("Please choose a video file");
+      return;
+    }
+
+    if(btn){
+      btn.disabled = true;
+      btn.textContent =
+        "Preparing video...";
+    }
+
+    /*
+     * Compress the video BEFORE requesting
+     * the R2 upload URL.
+     */
+    const file =
+      await compressEpisodeVideo(
+        originalFile,
+        pct => {
+
+          if(btn){
+
+            btn.textContent =
+              "Compressing: " +
+              pct +
+              "%";
+          }
+
+        }
+      );
+
+    const originalMB =
+      originalFile.size /
+      1024 /
+      1024;
+
+    const finalMB =
+      file.size /
+      1024 /
+      1024;
+
+    console.log(
+      "Upload file:",
+      finalMB.toFixed(1),
+      "MB"
+    );
+
+    if(btn){
+      btn.textContent =
+        "Preparing upload...";
+    }
+
+    /*
+     * Ask Flask only for a presigned R2 URL.
+     * The actual video never passes through Flask.
+     */
+    const signed =
+      await api(
+        "/api/episodes/presign",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            filename:
+              file.name,
+
+            content_type:
+              "video/mp4",
+
+            size:
+              file.size
+
+          })
+        }
+      );
+
+    if(!signed.upload_url){
+      throw Error(
+        "Could not prepare video upload"
+      );
+    }
+
+    /*
+     * Upload compressed video directly
+     * from the phone/browser to R2.
+     */
+    await new Promise(
+      (resolve,reject)=>{
+
+        const x =
+          new XMLHttpRequest();
+
+        x.open(
+          "PUT",
+          signed.upload_url,
+          true
+        );
+
+        x.setRequestHeader(
+          "Content-Type",
+          "video/mp4"
+        );
+
+        x.upload.onprogress =
+          e => {
+
+            if(
+              e.lengthComputable &&
+              btn
+            ){
+
+              const pct =
+                Math.round(
+                  e.loaded /
+                  e.total *
+                  100
+                );
+
+              btn.textContent =
+                "Uploading: " +
+                pct +
+                "%";
+            }
+          };
+
+        x.onload = ()=>{
+
+          if(
+            x.status >= 200 &&
+            x.status < 300
+          ){
+
+            resolve();
+
+          }else{
+
+            reject(
+              Error(
+                "Video upload failed (" +
+                x.status +
+                ")"
+              )
+            );
+          }
+        };
+
+        x.onerror = () =>
+          reject(
+            Error(
+              "Video upload failed"
+            )
+          );
+
+        x.onabort = () =>
+          reject(
+            Error(
+              "Upload cancelled"
+            )
+          );
+
+        x.send(file);
+      }
+    );
+
+    if(btn){
+      btn.textContent =
+        "Saving episode...";
+    }
+
+    if(episodeId){
+
+      await api(
+        "/api/episodes/" +
+        encodeURIComponent(
+          episodeId
+        ),
+        {
+          method:"PUT",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            number:
+              number,
+
+            title:
+              title,
+
+            video_key:
+              signed.key
+
+          })
+        }
+      );
 
     }else{
 
-     reject(
-      Error(
-       "Video upload failed ("+
-       x.status+
-       ")"
-      )
-     );
+      await api(
+        "/api/episodes",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            drama_id:
+              dramaId,
+
+            number:
+              number,
+
+            title:
+              title,
+
+            video_key:
+              signed.key
+
+          })
+        }
+      );
     }
-   };
 
-   x.onerror=()=>reject(
-    Error("Video upload failed")
-   );
-
-   x.onabort=()=>reject(
-    Error("Upload cancelled")
-   );
-
-   x.send(file);
-  });
-
-  if(btn){
-   btn.textContent="Saving episode...";
-  }
-
-  /*
-   * Only the small metadata request goes through Flask.
-   */
-  if(episodeId){
-
-   await api(
-    "/api/episodes/"+
-    encodeURIComponent(episodeId),
-    {
-     method:"PUT",
-     headers:{
-      "Content-Type":"application/json"
-     },
-     body:JSON.stringify({
-      number:number,
-      title:title,
-      video_key:signed.key
-     })
+    if(btn){
+      btn.textContent =
+        "Published ✓";
     }
-   );
 
-  }else{
+    closeM("episodeModal");
 
-   await api(
-    "/api/episodes",
-    {
-     method:"POST",
-     headers:{
-      "Content-Type":"application/json"
-     },
-     body:JSON.stringify({
-      drama_id:dramaId,
-      number:number,
-      title:title,
-      video_key:signed.key
-     })
+    await load();
+
+  }catch(e){
+
+    console.error(
+      "Episode upload error:",
+      e
+    );
+
+    alert(
+      e.message ||
+      "Upload failed"
+    );
+
+  }finally{
+
+    if(btn){
+
+      btn.disabled = false;
+
+      btn.textContent =
+        original;
     }
-   );
   }
+}
+0k",
 
-  if(btn){
-   btn.textContent="Published ✓";
+        "-bufsize",
+        "2800k",
+
+        "-pix_fmt",
+        "yuv420p",
+
+        "-c:a",
+        "aac",
+
+        "-b:a",
+        "96k",
+
+        "-movflags",
+        "+faststart",
+
+        outputName
+
+      ]);
+
+    if(result !== 0){
+      throw Error(
+        "Video compression failed"
+      );
+    }
+
+    const data =
+      await ffmpeg.readFile(outputName);
+
+    const compressed =
+      new Blob(
+        [data.buffer],
+        {
+          type:"video/mp4"
+        }
+      );
+
+    /*
+     * If compression somehow made the file bigger,
+     * use the original instead.
+     */
+    if(compressed.size >= file.size){
+
+      if(onProgress){
+        onProgress(100);
+      }
+
+      return file;
+    }
+
+    const originalMB =
+      file.size / 1024 / 1024;
+
+    const compressedMB =
+      compressed.size / 1024 / 1024;
+
+    const saved =
+      Math.max(
+        0,
+        Math.round(
+          (1 - compressed.size / file.size) * 100
+        )
+      );
+
+    console.log(
+      "Episode compression:",
+      originalMB.toFixed(1),
+      "MB ->",
+      compressedMB.toFixed(1),
+      "MB",
+      "(" + saved + "% smaller)"
+    );
+
+    if(onProgress){
+      onProgress(100);
+    }
+
+    return new File(
+      [compressed],
+      (
+        file.name
+          .replace(/\.[^.]+$/, "")
+        + "_720p.mp4"
+      ),
+      {
+        type:"video/mp4",
+        lastModified:Date.now()
+      }
+    );
+
+  }finally{
+
+    ffmpeg.off(
+      "progress",
+      progressHandler
+    );
+
+    try{
+      await ffmpeg.deleteFile(inputName);
+    }catch(e){}
+
+    try{
+      await ffmpeg.deleteFile(outputName);
+    }catch(e){}
   }
-
-  closeM("episodeModal");
-
-  await load();
-
- }catch(e){
-
-  alert(
-   e.message ||
-   "Upload failed"
-  );
-
- }finally{
-
-  if(btn){
-   btn.disabled=false;
-   btn.textContent=original;
-  }
- }
-}
-
-function play(id){
- let e=episodes.find(x=>String(x.id)===String(id));if(!e)return;
- let v=document.createElement("video");v.controls=true;v.autoplay=true;v.src=video(e);
- v.style.cssText="position:fixed;z-index:9999;left:5%;top:5%;width:90%;height:90%;background:#000";
- document.body.appendChild(v);
- let close=()=>{v.pause();v.remove();document.removeEventListener("click",close)};
- setTimeout(()=>document.addEventListener("click",close),100);
- v.addEventListener("click",x=>x.stopPropagation());
-}
-
-async function delEpisode(id){
- if(!confirm("Delete this episode and its video?"))return;
- try{await api("/api/episodes/"+encodeURIComponent(id),{method:"DELETE"});await load()}catch(e){alert(e.message)}
-}
-
-function renderHome(){
- const sections=[["hero","Hero"],["new_releases","New Releases"],["trending","Trending"],["for_you","For You"],["popular","Popular"]];
- $("homeList").innerHTML=dramas.map(d=>{
-   const selected=sections.filter(([k])=>Array.isArray(homepage[k]) && homepage[k].map(String).includes(String(d.id))).map(x=>x[0]);
-   return `<div class="panel"><b>${esc(d.title)}</b><div class="actions" style="margin-top:10px">${sections.map(x=>`<label><input type="checkbox" data-home="${esc(d.id)}" value="${x[0]}" ${selected.includes(x[0])?"checked":""}> ${x[1]}</label>`).join("")}</div></div>`;
- }).join("");
-}
-
-async function saveHomepage(){
- let out={
-   hero:[],
-   new_releases:[],
-   trending:[],
-   for_you:[],
-   popular:[]
- };
-
- dramas.forEach(d=>{
-   document.querySelectorAll(
-     `input[data-home="${CSS.escape(String(d.id))}"]:checked`
-   ).forEach(x=>{
-     if(out[x.value]) out[x.value].push(d.id);
-   });
- });
-
- try{
-   const saved=await api("/api/admin/homepage",{
-     method:"PUT",
-     headers:{"Content-Type":"application/json"},
-     body:JSON.stringify(out)
-   });
-
-   homepage=saved;
-   renderHome();
-   alert("Homepage saved");
- }catch(e){
-   alert(e.message);
- }
-}
-
-async function loadMedia(){
- try{
-  let m=arr(await api("/api/media"));
-  $("mediaList").innerHTML=m.length?m.map(x=>`<div style="padding:12px;border-bottom:1px solid #292929"><b>${esc(x.name||x.filename||x.path||"Media")}</b><div class="muted">${esc(x.type||x.mime||"")}</div></div>`).join(""):'<div class="empty">No media.</div>';
- }catch(e){$("mediaList").innerHTML='<div class="empty">Media unavailable.</div>'}
 }
 
 
-async function loadAdvertising(){
- try{
-  let a=await api("/api/admin/advertising");
-  let x=a.advertising||a||{};
-
-  $("adsEnabled").checked=!!x.enabled;
-  $("adsPopup").checked=!!x.popup_enabled;
-
-  let home=x.home_banner||{};
-  let drama=x.drama_banner||{};
-  let episode=x.episode_banner||{};
-  let feed=x.in_feed||{};
-  let preroll=x.video_preroll||{};
-
-  $("adHomeEnabled").checked=!!home.enabled;
-  $("adHomeHtml").value=home.html||"";
-
-  $("adDramaEnabled").checked=!!drama.enabled;
-  $("adDramaHtml").value=drama.html||"";
-
-  $("adEpisodeEnabled").checked=!!episode.enabled;
-  $("adEpisodeHtml").value=episode.html||"";
-
-  $("adFeedEnabled").checked=!!feed.enabled;
-  $("adFeedHtml").value=feed.html||"";
-
-  $("adPrerollEnabled").checked=!!preroll.enabled;
-  $("adPrerollHtml").value=preroll.html||"";
-
- }catch(e){
-  console.error("Advertising load:",e);
- }
-}
-
-
-function calculateAdRevenue(){
-  const impressions = Number($("cpmImpressions").value || 0);
-  const cpm = Number($("cpmRate").value || 0);
-
-  if(impressions < 0 || cpm < 0){
-    $("cpmRevenueResult").textContent = "Estimated revenue: $0.00";
-    return;
-  }
-
-  const revenue = (impressions / 1000) * cpm;
-
-  $("cpmRevenueResult").textContent =
-    "Estimated revenue: $" + revenue.toFixed(2);
-}
-
-async function saveAdvertising(){
- try{
-  let body={
-   enabled:$("adsEnabled").checked,
-   popup_enabled:$("adsPopup").checked,
-
-   home_banner:{
-    enabled:$("adHomeEnabled").checked,
-    html:$("adHomeHtml").value
-   },
-
-   drama_banner:{
-    enabled:$("adDramaEnabled").checked,
-    html:$("adDramaHtml").value
-   },
-
-   episode_banner:{
-    enabled:$("adEpisodeEnabled").checked,
-    html:$("adEpisodeHtml").value
-   },
-
-   in_feed:{
-    enabled:$("adFeedEnabled").checked,
-    html:$("adFeedHtml").value
-   },
-
-   video_preroll:{
-    enabled:$("adPrerollEnabled").checked,
-    html:$("adPrerollHtml").value
-   }
-  };
-
-  await api("/api/admin/advertising",{
-   method:"PUT",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify(body)
-  });
-
-  $("adStatus").textContent="Advertising settings saved.";
-  setTimeout(()=>$("adStatus").textContent="",3000);
-
- }catch(e){
-  alert(e.message);
- }
-}
-
-function renderAnalytics(){
- let views=analytics.total_views||analytics.views||dramas.reduce((a,d)=>a+Number(d.views||0),0);
- let users=analytics.unique_visitors||analytics.visitors||0;
- $("av").textContent=fmt(views);$("au").textContent=fmt(users);$("ad").textContent=dramas.length;$("ae").textContent=episodes.length;
- $("analyticsList").innerHTML=dramas.map(d=>`<tr><td>${esc(d.title)}</td><td>${episodes.filter(e=>String(e.drama_id)===String(d.id)).length}</td><td>${fmt(d.views)}</td></tr>`).join("");
-}
-
-document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("show")}));
-load();
-
-async function loadMonetization(){
- try{
-  const j=await api("/api/admin/monetization");
-
-  $("premiumEnabled").checked=!!j.premium_enabled;
-  $("premiumName").value=j.premium_name||"Premium";
-  $("premiumCurrency").value=j.currency||"USD";
-  $("premiumMonthly").value=j.monthly_price??0;
-  $("premiumAnnual").value=j.annual_price??0;
-  $("premiumDescription").value=j.premium_description||"";
-
-  updatePremiumStatus(!!j.premium_enabled);
- }catch(e){
-  console.error(e);
- }
-}
-
-function updatePremiumStatus(enabled){
- const status=$("premiumStatus");
- const text=$("premiumStatusText");
-
- if(enabled){
-  status.textContent="💎 PREMIUM MODE: ON";
-  status.style.color="#70d48a";
-  text.textContent="Premium subscriptions are enabled in the admin configuration.";
- }else{
-  status.textContent="🆓 FREE MODE: ON";
-  status.style.color="#aaa";
-  text.textContent="The website remains free. Premium has not been activated.";
- }
-}
-
-async function saveMonetization(){
- const body={
-  premium_enabled:$("premiumEnabled").checked,
-  monthly_price:Number($("premiumMonthly").value||0),
-  annual_price:Number($("premiumAnnual").value||0),
-  currency:$("premiumCurrency").value.trim().toUpperCase(),
-  premium_name:$("premiumName").value.trim(),
-  premium_description:$("premiumDescription").value.trim()
- };
-
- try{
-  const j=await api("/api/admin/monetization",{
-   method:"PUT",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify(body)
-  });
-
-  updatePremiumStatus(!!j.monetization.premium_enabled);
-
-  $("premiumStatusMsg").textContent="Saved successfully.";
-  setTimeout(()=>$("premiumStatusMsg").textContent="",2500);
-
- }catch(e){
-  $("premiumStatusMsg").textContent=e.message||"Save failed";
- }
-}
-
-</script>
-</body>
-</html>

@@ -820,8 +820,65 @@ function renderAd(type){
 
   return `<div class="dh-ad" data-ad-type="${type}">
     <div class="dh-ad-label">Advertisement</div>
-    ${content}
+    <div class="dh-ad-content">${content}</div>
   </div>`;
+}
+
+function executeAdScripts(root){
+  if(!root) return;
+
+  root.querySelectorAll('script').forEach(oldScript => {
+    const newScript = document.createElement('script');
+
+    for(const attr of oldScript.attributes){
+      newScript.setAttribute(attr.name, attr.value);
+    }
+
+    newScript.textContent = oldScript.textContent || '';
+    oldScript.replaceWith(newScript);
+  });
+}
+
+function activateRenderedAds(root=document){
+  if(!root) return;
+
+  root.querySelectorAll('.dh-ad').forEach(ad => {
+    executeAdScripts(ad);
+  });
+
+  trackVisibleAds();
+}
+
+/* Automatically activate third-party ad scripts after SPA page renders. */
+if(!window.DH_AD_MUTATION_OBSERVER){
+  window.DH_AD_MUTATION_OBSERVER = new MutationObserver((mutations)=>{
+    let foundAd = false;
+
+    for(const mutation of mutations){
+      for(const node of mutation.addedNodes){
+        if(node.nodeType !== 1) continue;
+
+        if(node.matches && node.matches('.dh-ad')){
+          executeAdScripts(node);
+          foundAd = true;
+        }
+
+        if(node.querySelectorAll){
+          node.querySelectorAll('.dh-ad').forEach(ad=>{
+            executeAdScripts(ad);
+            foundAd = true;
+          });
+        }
+      }
+    }
+
+    if(foundAd) trackVisibleAds();
+  });
+
+  window.DH_AD_MUTATION_OBSERVER.observe(
+    document.getElementById('app'),
+    {childList:true, subtree:true}
+  );
 }
 
 const episodeUrl = (d, n) => {

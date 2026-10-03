@@ -2076,7 +2076,11 @@ html.dh-reels-fullscreen .pl video{
   let reelsFullscreen=false;
 
   function isEpisodePage(){
-    return !!document.querySelector('.pl');
+    const [route] = (location.hash.slice(2) || 'home').split('/');
+    return (
+      (route === 'watch' || route === 'episode') &&
+      !!document.querySelector('.pl')
+    );
   }
 
   function lockPage(){

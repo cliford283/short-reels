@@ -214,7 +214,7 @@ svg{display:block}
 /* player */
 .pl{aspect-ratio:9/16;max-height:100dvh;max-width:56.25vh;margin:auto;position:relative;height:100dvh;background:#000;overflow:hidden}
 .pl video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
-.ui{position:absolute;inset:0;z-index:5;transition:opacity .25s}
+.ui{position:absolute;inset:0;z-index:50;transition:opacity .25s}
 .ui.off{opacity:0;pointer-events:none}
 .ui.off .pl-top{pointer-events:auto;opacity:1}
 .ui.off .pl-top .ib{pointer-events:auto}
@@ -498,33 +498,6 @@ svg{display:block}
 </style>
 
 
-<style>
-.pl{
-  width:min(100vw,56.25vh)!important;
-  height:min(177.7778vw,100dvh)!important;
-  max-width:none!important;
-  max-height:none!important;
-  aspect-ratio:9/16!important;
-  margin:0 auto!important;
-  overflow:hidden!important;
-  position:relative!important;
-}
-.pl video{
-  width:100%!important;
-  height:100%!important;
-  object-fit:cover!important;
-}
-.pl-top{
-  width:100%!important;
-  box-sizing:border-box!important;
-}
-.pl-logo{
-  position:absolute!important;
-  right:18px!important;
-  top:72px!important;
-  z-index:6!important;
-}
-</style>
 
 
 <style>
@@ -1468,8 +1441,8 @@ const views = {
   v.addEventListener('error', () => { v.hidden = true; $('#pm').hidden = false; ui.classList.remove('off'); });
   v.play().catch(() => { pp.innerHTML = ic('tri', 38); });
   showUI();
-  activateRenderedAds(app);
   this.setupPlayerMenus();
+  activateRenderedAds(app);
  },
 
  setupPlayerMenus() {
@@ -1493,6 +1466,7 @@ const views = {
     document.body.appendChild(sheet);
 
     epBtn.onclick = e => {
+      console.log('EPISODES BUTTON CLICKED');
       e.preventDefault();
       e.stopPropagation();
 
@@ -1561,6 +1535,7 @@ const views = {
     document.body.appendChild(settings);
 
     settingsBtn.onclick = e => {
+      console.log('SETTINGS BUTTON CLICKED');
       e.preventDefault();
       e.stopPropagation();
       settings.classList.add('show');
@@ -1915,50 +1890,6 @@ window.addEventListener('load', function(){
 
 
 
-/* ===== REELS FULLSCREEN PLAYER ===== */
-html.dh-reels-fullscreen,
-html.dh-reels-fullscreen body{
-  width:100%!important;
-  height:100%!important;
-  margin:0!important;
-  padding:0!important;
-  overflow:hidden!important;
-  overscroll-behavior:none!important;
-}
-
-html.dh-reels-fullscreen #app{
-  position:fixed!important;
-  inset:0!important;
-  width:100%!important;
-  height:100%!important;
-  overflow:hidden!important;
-  background:#000!important;
-}
-
-html.dh-reels-fullscreen .pl{
-  position:absolute!important;
-  top:50%!important;
-  left:50%!important;
-  transform:translate(-50%,-50%)!important;
-  width:min(100vw,56.25vh)!important;
-  height:min(177.7778vw,100vh)!important;
-  max-width:none!important;
-  max-height:none!important;
-  aspect-ratio:9/16!important;
-  margin:0!important;
-  overflow:hidden!important;
-  background:#000!important;
-}
-
-html.dh-reels-fullscreen .pl video{
-  position:absolute!important;
-  inset:0!important;
-  width:100%!important;
-  height:100%!important;
-  object-fit:cover!important;
-}
-
-
 /* ===== REAL VIDEO ADS ===== */
 .dh-video-ad{
   position:absolute!important;
@@ -2218,142 +2149,7 @@ html.dh-reels-fullscreen .pl video{
 </script>
 
 
-<script>
 
-(function(){
-  let adTimer = 0;
-  let adPlaying = false;
-  let adVideo = null;
-  let watchedSeconds = 0;
-  let lastTick = 0;
-
-  function getVideoAdUrl(){
-    const html = DH_ADS && DH_ADS.video_preroll && DH_ADS.video_preroll.enabled
-      ? (DH_ADS.video_preroll.html || '')
-      : '';
-
-    if(!html) return '';
-
-    const box = document.createElement('div');
-    box.innerHTML = html;
-
-    const v = box.querySelector('video');
-    if(v){
-      if(v.getAttribute('src')) return v.getAttribute('src');
-      const source = v.querySelector('source[src]');
-      if(source) return source.getAttribute('src');
-    }
-
-    const source = box.querySelector('source[src]');
-    if(source) return source.getAttribute('src');
-
-    const match = html.match(/https?:\/\/[^"'\\s>]+\\.(?:mp4|webm|mov)(?:\\?[^"'\\s>]*)?/i);
-    return match ? match[0] : '';
-  }
-
-  function createVideoAd(){
-    if(document.getElementById('dhVideoAd')) return;
-
-    const wrap = document.createElement('div');
-    wrap.id = 'dhVideoAd';
-    wrap.className = 'dh-video-ad';
-    wrap.innerHTML = `
-      <div class="dh-video-ad-label">Advertisement</div>
-      <button class="dh-video-ad-close" type="button" aria-label="Close advertisement">&times;</button>
-      <video id="dhVideoAdPlayer" playsinline preload="auto"></video>
-    `;
-
-    document.body.appendChild(wrap);
-
-    adVideo = document.getElementById('dhVideoAdPlayer');
-
-    wrap.querySelector('.dh-video-ad-close').onclick = closeVideoAd;
-
-    adVideo.addEventListener('ended', closeVideoAd);
-    adVideo.addEventListener('error', closeVideoAd);
-  }
-
-  function currentEpisodeVideo(){
-    return document.querySelector('#v');
-  }
-
-  function showVideoAd(){
-    if(adPlaying) return;
-
-    const src = getVideoAdUrl();
-    const episode = currentEpisodeVideo();
-
-    if(!src || !episode) return;
-
-    createVideoAd();
-
-    adPlaying = true;
-    episode.pause();
-
-    adVideo.src = src;
-
-    const wrap = document.getElementById('dhVideoAd');
-    wrap.classList.add('show');
-    wrap.setAttribute('aria-hidden', 'false');
-
-    adVideo.currentTime = 0;
-    adVideo.play().catch(() => closeVideoAd());
-  }
-
-  function closeVideoAd(){
-    if(!adPlaying) return;
-
-    const episode = currentEpisodeVideo();
-
-    adPlaying = false;
-
-    if(adVideo){
-      adVideo.pause();
-      adVideo.removeAttribute('src');
-      adVideo.load();
-    }
-
-    const wrap = document.getElementById('dhVideoAd');
-
-    if(wrap){
-      wrap.classList.remove('show');
-      wrap.setAttribute('aria-hidden', 'true');
-    }
-
-    if(episode){
-      episode.play().catch(() => {});
-    }
-
-    watchedSeconds = 0;
-  }
-
-  function tick(){
-    const episode = currentEpisodeVideo();
-
-    if(!episode || episode.paused || episode.ended || adPlaying){
-      lastTick = 0;
-      return;
-    }
-
-    const now = Date.now();
-
-    if(lastTick){
-      watchedSeconds += Math.min((now - lastTick) / 1000, 2);
-    }
-
-    lastTick = now;
-
-    if(watchedSeconds >= 120){
-      watchedSeconds = 0;
-      showVideoAd();
-    }
-  }
-
-  setInterval(tick, 1000);
-
-  window.DH_SHOW_VIDEO_AD = showVideoAd;
-})();
-</script>
 
 </body>
 </html>

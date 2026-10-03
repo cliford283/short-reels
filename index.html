@@ -954,14 +954,26 @@ function executeAdScripts(root){
   if(!root) return;
 
   root.querySelectorAll('script').forEach(oldScript => {
+    if(oldScript.dataset.dhExecuted === '1') return;
+
     const newScript = document.createElement('script');
 
     for(const attr of oldScript.attributes){
       newScript.setAttribute(attr.name, attr.value);
     }
 
-    newScript.textContent = oldScript.textContent || '';
-    oldScript.replaceWith(newScript);
+    newScript.dataset.dhExecuted = '1';
+
+    if(oldScript.src){
+      newScript.src = oldScript.src;
+    }else{
+      newScript.textContent = oldScript.textContent || '';
+    }
+
+    // Insert the real script into the live DOM so third-party
+    // ad code can use document.currentScript correctly.
+    oldScript.parentNode.insertBefore(newScript, oldScript);
+    oldScript.remove();
   });
 }
 

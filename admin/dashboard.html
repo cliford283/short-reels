@@ -1857,50 +1857,212 @@ async function creatorUploadSource(){
   throw new Error("Source video is missing.");
  }
 
- const presign=await api(
-  "/api/episode-creator/presign",
+ const file=creatorSourceFile;
+
+ // Use a single PUT for smaller files.
+ // Large source videos use R2 multipart upload.
+ const MULTIPART_THRESHOLD=100*1024*1024;
+ const PART_SIZE=64*1024*1024;
+
+ if(file.size < MULTIPART_THRESHOLD){
+
+  const presign=await api(
+   "/api/episode-creator/presign",
+   {
+    method:"POST",
+    headers:{
+     "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+     filename:file.name,
+     content_type:
+      file.type ||
+      "application/octet-stream"
+    })
+   }
+  );
+
+  if(!presign.upload_url){
+   throw new Error("Could not prepare R2 upload.");
+  }
+
+  $("creatorUploadProgress").textContent=
+   "Uploading source video to R2...";
+
+  const response=await fetch(
+   presign.upload_url,
+   {
+    method:"PUT",
+    headers:{
+     "Content-Type":
+      file.type ||
+      "application/octet-stream"
+    },
+    body:file
+   }
+  );
+
+  if(!response.ok){
+   throw new Error(
+    "R2 source upload failed: HTTP "+
+    response.status
+   );
+  }
+
+  return presign;
+ }
+
+ $("creatorUploadProgress").textContent=
+  "Preparing large video upload...";
+
+ const init=await api(
+  "/api/episode-creator/multipart/init",
   {
    method:"POST",
    headers:{
     "Content-Type":"application/json"
    },
    body:JSON.stringify({
-    filename:creatorSourceFile.name,
+    filename:file.name,
     content_type:
-     creatorSourceFile.type ||
+     file.type ||
      "application/octet-stream"
    })
   }
  );
 
- if(!presign.upload_url){
-  throw new Error("Could not prepare R2 upload.");
+ if(!init.upload_id || !init.key){
+  throw new Error("Could not start large video upload.");
  }
 
- $("creatorUploadProgress").textContent=
-  "Uploading source video to R2...";
+ const totalParts=Math.ceil(file.size/PART_SIZE);
+ const uploadedParts=[];
 
- const response=await fetch(
-  presign.upload_url,
-  {
-   method:"PUT",
-   headers:{
-    "Content-Type":
-     creatorSourceFile.type ||
-     "application/octet-stream"
-   },
-   body:creatorSourceFile
+ try{
+
+  for(let partNumber=1;partNumber<=totalParts;partNumber++){
+
+   const startOffset=(partNumber-1)*PART_SIZE;
+   const endOffset=Math.min(
+    startOffset+PART_SIZE,
+    file.size
+   );
+
+   const chunk=file.slice(
+    startOffset,
+    endOffset
+   );
+
+   $("creatorUploadProgress").textContent=
+    `Uploading video part ${partNumber}/${totalParts}...`;
+
+   const signed=await api(
+    "/api/episode-creator/multipart/part-url",
+    {
+     method:"POST",
+     headers:{
+      "Content-Type":"application/json"
+     },
+     body:JSON.stringify({
+      key:init.key,
+      upload_id:init.upload_id,
+      part_number:partNumber
+     })
+    }
+   );
+
+   if(!signed.upload_url){
+    throw new Error(
+     `Could not prepare video part ${partNumber}.`
+    );
+   }
+
+   const response=await fetch(
+    signed.upload_url,
+    {
+     method:"PUT",
+     body:chunk
+    }
+   );
+
+   if(!response.ok){
+    throw new Error(
+     `Video part ${partNumber} failed: HTTP ${response.status}`
+    );
+   }
+
+   const etag=response.headers.get("ETag");
+
+   if(!etag){
+    throw new Error(
+     "R2 did not return the ETag for uploaded part "+
+     partNumber+
+     ". Check the R2 CORS ExposeHeaders setting."
+    );
+   }
+
+   uploadedParts.push({
+    PartNumber:partNumber,
+    ETag:etag
+   });
   }
- );
 
- if(!response.ok){
-  throw new Error(
-   "R2 source upload failed: HTTP "+
-   response.status
+  $("creatorUploadProgress").textContent=
+   "Finishing large video upload...";
+
+  const complete=await api(
+   "/api/episode-creator/multipart/complete",
+   {
+    method:"POST",
+    headers:{
+     "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+     key:init.key,
+     upload_id:init.upload_id,
+     parts:uploadedParts
+    })
+   }
   );
- }
 
- return presign;
+  if(!complete.ok){
+   throw new Error(
+    complete.error ||
+    "Could not complete large video upload."
+   );
+  }
+
+  return {
+   ok:true,
+   key:init.key,
+   url:complete.url || init.url
+  };
+
+ }catch(error){
+
+  try{
+   await api(
+    "/api/episode-creator/multipart/abort",
+    {
+     method:"POST",
+     headers:{
+      "Content-Type":"application/json"
+     },
+     body:JSON.stringify({
+      key:init.key,
+      upload_id:init.upload_id
+     })
+    }
+   );
+  }catch(abortError){
+   console.log(
+    "Multipart cleanup failed:",
+    abortError
+   );
+  }
+
+  throw error;
+ }
 }
 
 async function creatorCreateEpisodes(){

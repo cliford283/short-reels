@@ -1252,7 +1252,11 @@ const views = {
    renderAd('home_banner') +
    row('Resume', 'Continue Watching', cont.map(x => x.d), d => { const p = prog[d.id]; return poster(d, { ep: p.ep, x: 1, pct: p.d ? Math.min(100, Math.round(p.t / p.d * 100)) : 0 }); }) +
    row('This week', 'Trending Now', placementDramas('trending')) +
-   row('Just dropped', 'New Releases', placementDramas('new_releases')) +
+   row('Just dropped', 'New Releases', [...placementDramas('new_releases')].sort((a, b) => {
+     const aTime = new Date(a.created_at || a.createdAt || a.uploaded_at || a.uploadedAt || a.updated_at || 0).getTime();
+     const bTime = new Date(b.created_at || b.createdAt || b.uploaded_at || b.uploadedAt || b.updated_at || 0).getTime();
+     return bTime - aTime;
+   })) +
    row('For you', 'For You', placementDramas('for_you')) +
    row('Popular', 'Popular', placementDramas('popular'));
   const tr = $('#track'), dots = [...document.querySelectorAll('#dots i')];

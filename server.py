@@ -1591,6 +1591,186 @@ def episode_creator_presign():
 
 
 
+
+@app.route("/api/episode-creator/multipart/init", methods=["POST"])
+@admin_required
+def episode_creator_multipart_init():
+
+    body = request.get_json(silent=True) or {}
+
+    filename = str(body.get("filename") or "").strip()
+    content_type = str(
+        body.get("content_type") or "video/mp4"
+    ).strip()
+
+    if not filename:
+        return jsonify({
+            "error": "Source filename is required"
+        }), 400
+
+    if not allowed_video(filename):
+        return jsonify({
+            "error": "Unsupported video format"
+        }), 400
+
+    extension = Path(filename).suffix.lower() or ".mp4"
+    source_id = uuid.uuid4().hex
+    key = f"sources/{source_id}{extension}"
+
+    try:
+        result = r2.create_multipart_upload(
+            Bucket=R2_BUCKET_NAME,
+            Key=key,
+            ContentType=content_type
+        )
+
+        return jsonify({
+            "ok": True,
+            "key": key,
+            "upload_id": result["UploadId"],
+            "url": f"{R2_PUBLIC_URL}/{key}",
+            "content_type": content_type
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Could not start multipart upload: {str(e)}"
+        }), 500
+
+
+@app.route("/api/episode-creator/multipart/part-url", methods=["POST"])
+@admin_required
+def episode_creator_multipart_part_url():
+
+    body = request.get_json(silent=True) or {}
+
+    key = str(body.get("key") or "").strip()
+    upload_id = str(body.get("upload_id") or "").strip()
+
+    try:
+        part_number = int(body.get("part_number") or 0)
+    except Exception:
+        part_number = 0
+
+    if not key or not upload_id or part_number < 1:
+        return jsonify({
+            "error": "key, upload_id and part_number are required"
+        }), 400
+
+    try:
+        upload_url = r2.generate_presigned_url(
+            "upload_part",
+            Params={
+                "Bucket": R2_BUCKET_NAME,
+                "Key": key,
+                "UploadId": upload_id,
+                "PartNumber": part_number
+            },
+            ExpiresIn=3600
+        )
+
+        return jsonify({
+            "ok": True,
+            "upload_url": upload_url,
+            "part_number": part_number
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Could not create part upload URL: {str(e)}"
+        }), 500
+
+
+@app.route("/api/episode-creator/multipart/complete", methods=["POST"])
+@admin_required
+def episode_creator_multipart_complete():
+
+    body = request.get_json(silent=True) or {}
+
+    key = str(body.get("key") or "").strip()
+    upload_id = str(body.get("upload_id") or "").strip()
+    parts = body.get("parts") or []
+
+    if not key or not upload_id:
+        return jsonify({
+            "error": "key and upload_id are required"
+        }), 400
+
+    if not isinstance(parts, list) or not parts:
+        return jsonify({
+            "error": "Multipart parts are required"
+        }), 400
+
+    clean_parts = []
+
+    try:
+        for part in parts:
+            part_number = int(part.get("PartNumber"))
+            etag = str(part.get("ETag") or "").strip()
+
+            if part_number < 1 or not etag:
+                raise ValueError("Invalid multipart part")
+
+            clean_parts.append({
+                "PartNumber": part_number,
+                "ETag": etag
+            })
+
+        clean_parts.sort(key=lambda x: x["PartNumber"])
+
+        result = r2.complete_multipart_upload(
+            Bucket=R2_BUCKET_NAME,
+            Key=key,
+            UploadId=upload_id,
+            MultipartUpload={
+                "Parts": clean_parts
+            }
+        )
+
+        return jsonify({
+            "ok": True,
+            "key": key,
+            "url": f"{R2_PUBLIC_URL}/{key}",
+            "etag": result.get("ETag")
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Could not complete multipart upload: {str(e)}"
+        }), 500
+
+
+@app.route("/api/episode-creator/multipart/abort", methods=["POST"])
+@admin_required
+def episode_creator_multipart_abort():
+
+    body = request.get_json(silent=True) or {}
+
+    key = str(body.get("key") or "").strip()
+    upload_id = str(body.get("upload_id") or "").strip()
+
+    if not key or not upload_id:
+        return jsonify({
+            "error": "key and upload_id are required"
+        }), 400
+
+    try:
+        r2.abort_multipart_upload(
+            Bucket=R2_BUCKET_NAME,
+            Key=key,
+            UploadId=upload_id
+        )
+
+        return jsonify({
+            "ok": True
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Could not abort multipart upload: {str(e)}"
+        }), 500
+
+
 @app.route("/api/episode-creator/auto-segments", methods=["POST"])
 @admin_required
 def auto_episode_segments():
@@ -2116,6 +2296,9 @@ def create_episode():
         drama_id
     )
 
+    # Move the drama to the front whenever a new episode is added.
+    drama["updated_at"] = now
+
     save_catalog(
         data
     )
@@ -2271,6 +2454,13 @@ def bulk_create_episodes():
         data,
         drama_id
     )
+
+    # Move the drama to the front whenever new episodes are bulk uploaded.
+    if created:
+        drama["updated_at"] = max(
+            e.get("created_at", "")
+            for e in created
+        )
 
     save_catalog(data)
 
@@ -2950,6 +3140,12 @@ def public_dramas():
             "published": True,
             "updated_at": d.get("updated_at", "")
         })
+
+    # Newest updated drama first.
+    result.sort(
+        key=lambda d: d.get("updated_at") or "",
+        reverse=True
+    )
 
     return jsonify(result)
 

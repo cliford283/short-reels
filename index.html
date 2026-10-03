@@ -1,27 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-<link id="r2-fast-preconnect" rel="preconnect" href="https://pub-90f9bb3eea1b4068a4755d1ab5247040.r2.dev" crossorigin>
-<link rel="dns-prefetch" href="//pub-90f9bb3eea1b4068a4755d1ab5247040.r2.dev">
-<link rel="icon" type="image/png" href="/static/short-reels-logo.png">
-<link rel="apple-touch-icon" href="/static/short-reels-logo.png">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080808">
-<title>Short Reels - Short Dramas & Mini Series</title>
-<meta name="description" content="Short Reels is a platform for watching short dramas, mini series, and episodic short-form stories online. Discover new short dramas and watch episodes on Short Reels.">
-<meta name="robots" content="index, follow">
-<meta name="author" content="Short Reels">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Short Reels">
-<meta property="og:title" content="Short Reels - Short Dramas & Mini Series">
-<meta property="og:description" content="Watch short dramas, mini series, and episodic short-form stories online on Short Reels.">
-<meta property="og:url" content="/">
-<meta property="og:image" content="/static/short-reels-logo.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Short Reels - Short Dramas & Mini Series">
-<meta name="twitter:description" content="Watch short dramas, mini series, and episodic short-form stories online on Short Reels.">
-<meta name="twitter:image" content="/static/short-reels-logo.png">
+<title>Free Short Drama</title>
+<meta name="description" content="Free short dramas, one episode at a time.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -63,64 +47,8 @@ svg{display:block}
 .pbar{position:absolute;z-index:3;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.25);border-radius:0 0 5px 5px}
 .pbar b{display:block;height:100%;background:var(--red)}
 
-
-/* controlled advertising */
-.dh-ad{
-  width:calc(100% - 36px);
-  max-width:728px;
-  margin:18px auto;
-  border-radius:14px;
-  overflow:hidden;
-  text-align:center;
-  box-sizing:border-box;
-}
-
-.dh-ad img{
-  display:block;
-  width:100%;
-  height:auto;
-  max-width:728px;
-  margin:0 auto;
-  border:0;
-}
-
-.dh-ad iframe{
-  display:block;
-  width:100%;
-  max-width:728px;
-  border:0;
-  margin:0 auto;
-}
-
-.dh-ad a{
-  display:block;
-  text-decoration:none;
-  color:inherit;
-}
-
-.dh-ad-label{
-  font-size:10px;
-  opacity:.45;
-  margin-bottom:6px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-}
-
-@media (max-width:600px){
-  .dh-ad{
-    width:calc(100% - 28px);
-    margin:14px auto;
-    border-radius:12px;
-  }
-
-  .dh-ad-label{
-    font-size:9px;
-    margin-bottom:5px;
-  }
-}
-
 /* home */
-.hero{position:relative;height:520px;background:#000}
+.hero{position:relative;height:min(76dvh,720px);background:#000}
 .track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .track::-webkit-scrollbar{display:none}
 .slide{position:relative;flex:0 0 100%;scroll-snap-align:start;overflow:hidden}
@@ -183,7 +111,7 @@ svg{display:block}
 .eph span{font-size:12px;color:var(--mut)}
 .eps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .ep{position:relative;aspect-ratio:16/25;border-radius:3px;overflow:hidden;background:linear-gradient(#151515,#0b0b0b);display:block}
-.ep img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.ep-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:12px;text-align:center;background:var(--g);font-family:Georgia,serif;font-size:16px;line-height:1.15}
+.ep img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ep span{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:10px;font-weight:600;letter-spacing:.1em;text-shadow:0 1px 3px #000;z-index:2}
 .ep.cur{outline:2px solid var(--red)}
 
@@ -212,33 +140,11 @@ svg{display:block}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 /* player */
-.pl{
-  width:min(100vw,56.25dvh);
-  height:min(177.7778vw,100dvh);
-  aspect-ratio:9 / 16;
-  margin:0 auto;
-  position:relative;
-  background:#000;
-  overflow:hidden;
-}
-.pl video{
-  display:block;
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain;
-  object-position:center;
-  background:#000;
-}
-.ui{position:absolute;inset:0;z-index:50;transition:opacity .25s}
+.pl{position:relative;height:100dvh;background:#000;overflow:hidden}
+.pl video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.ui{position:absolute;inset:0;z-index:5;transition:opacity .25s}
 .ui.off{opacity:0;pointer-events:none}
-.ui.off .pl-top{pointer-events:auto;opacity:1}
-.ui.off .pl-top .ib{pointer-events:auto}
-.pl-top{position:absolute;z-index:20;top:calc(10px + env(safe-area-inset-top));left:6px;right:6px;display:flex;align-items:center;pointer-events:auto}
-.pl-top .ib{position:relative;z-index:21;pointer-events:auto;touch-action:manipulation}
+.pl-top{position:absolute;top:calc(10px + env(safe-area-inset-top));left:6px;right:6px;display:flex;align-items:center}
 .pl-top .g{flex:1}
 .pl-logo{position:absolute;top:calc(64px + env(safe-area-inset-top));right:14px;display:flex;gap:4px;font-size:6px;font-weight:600;line-height:1.2;letter-spacing:.06em}
 .pl-logo i{width:2px;background:var(--red)}
@@ -253,608 +159,15 @@ svg{display:block}
 .bar{position:relative;height:10px;border-radius:5px;background:#555;cursor:pointer}
 .bar b{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--red);border-radius:5px}
 .bar::before{content:"";position:absolute;left:-2px;top:-8px;width:3px;height:26px;background:var(--red)}
-.pmsg[hidden]{display:none !important}.pmsg{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;color:#aaa;font-size:15px;line-height:1.6}
+.pmsg{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;color:#aaa;font-size:15px;line-height:1.6}
 
 /* toast */
 .toast{position:fixed;z-index:70;left:50%;bottom:96px;transform:translateX(-50%);width:min(calc(100% - 24px),456px);padding:14px 16px;background:#e6e1e6;color:#1a1a1a;border-radius:3px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s}
 .toast.on{opacity:1}
 @media(prefers-reduced-motion:reduce){.spin{animation:none}.sp-in b{animation:none;clip-path:none}.sp-in u{animation:none;width:96px}.splash{transition:none}}
-
-.apple-auth{
- width:100%;
- padding:15px;
- border:1px solid #444;
- border-radius:8px;
- background:#fff;
- color:#111;
- font-weight:bold;
- font-size:15px;
- margin-bottom:12px;
-}
-
 </style>
-
-<style>
-.social-auth{
-  margin-top:18px;
-}
-
-.social-divider{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  color:#777;
-  font-size:12px;
-  margin:18px 0;
-}
-
-.social-divider::before,
-.social-divider::after{
-  content:"";
-  flex:1;
-  height:1px;
-  background:#333;
-}
-
-.social-auth-btn{
-  width:100%;
-  height:54px;
-  margin-bottom:12px;
-  border-radius:10px;
-  border:1px solid #333;
-  background:#151515;
-  color:#fff;
-  font-size:15px;
-  font-weight:600;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:12px;
-}
-
-.social-auth-btn:active{
-  transform:scale(.99);
-}
-
-.social-icon{
-  width:24px;
-  height:24px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:800;
-  font-size:18px;
-}
-
-.apple-auth{
-  background:#fff;
-  color:#111;
-  border-color:#fff;
-}
-</style>
-
-<style id="professional-auth-design">
-/* ===== SHORT REELS PROFESSIONAL AUTH DESIGN ===== */
-
-#authGate{
-  min-height:100vh !important;
-  min-height:100dvh !important;
-  background:
-    radial-gradient(circle at 50% -10%, rgba(210,0,40,.16), transparent 38%),
-    #070707 !important;
-  display:flex;
-  align-items:center !important;
-  justify-content:center !important;
-  padding:24px 18px !important;
-  box-sizing:border-box !important;
-}
-
-#authGate > *{
-  box-sizing:border-box;
-}
-
-#authGate .auth-container,
-#authGate .auth-card{
-  width:100%;
-  max-width:430px;
-}
-
-/* Logo */
-#authGate .auth-logo{
-  text-align:center !important;
-  font-size:34px !important;
-  line-height:1 !important;
-  letter-spacing:3px !important;
-  font-weight:900 !important;
-  margin-bottom:12px !important;
-}
-
-#authGate .auth-logo span{
-  color:#d90429 !important;
-}
-
-/* Subtitle */
-#authGate .auth-subtitle,
-#authGate p{
-  text-align:center;
-}
-
-/* Tabs */
-#authGate .auth-tabs{
-  display:flex !important;
-  margin:30px 0 22px !important;
-  border-bottom:1px solid #292929 !important;
-}
-
-#authGate .auth-tabs > *{
-  flex:1 !important;
-  text-align:center !important;
-}
-
-/* Inputs */
-#authGate input{
-  width:100% !important;
-  height:56px !important;
-  box-sizing:border-box !important;
-  border:1px solid #292929 !important;
-  border-radius:12px !important;
-  background:#121212 !important;
-  color:#fff !important;
-  padding:0 17px !important;
-  font-size:16px !important;
-  outline:none !important;
-  transition:.2s ease !important;
-}
-
-#authGate input:focus{
-  border-color:#d90429 !important;
-  box-shadow:0 0 0 3px rgba(217,4,41,.12) !important;
-}
-
-/* Main login/register button */
-#authGate button[type="submit"]{
-  width:100% !important;
-  height:56px !important;
-  border:0 !important;
-  border-radius:12px !important;
-  background:linear-gradient(135deg,#ed1239,#c90029) !important;
-  color:#fff !important;
-  font-size:15px !important;
-  font-weight:800 !important;
-  letter-spacing:.7px !important;
-  box-shadow:0 8px 25px rgba(217,4,41,.20) !important;
-  transition:transform .15s ease,filter .15s ease !important;
-}
-
-#authGate button[type="submit"]:active{
-  transform:scale(.98) !important;
-}
-
-/* OR separator */
-#authGate .social-auth{
-  margin-top:22px !important;
-}
-
-#authGate .social-divider{
-  display:flex !important;
-  align-items:center !important;
-  gap:14px !important;
-  margin:22px 0 !important;
-  color:#777 !important;
-  font-size:11px !important;
-  font-weight:600 !important;
-  letter-spacing:1.5px !important;
-}
-
-#authGate .social-divider::before,
-#authGate .social-divider::after{
-  content:"" !important;
-  height:1px !important;
-  flex:1 !important;
-  background:#292929 !important;
-}
-
-/* Google + Apple */
-#authGate .social-auth-btn{
-  width:100% !important;
-  height:54px !important;
-  border-radius:12px !important;
-  margin-bottom:12px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  gap:12px !important;
-  font-size:15px !important;
-  font-weight:700 !important;
-  letter-spacing:.1px !important;
-  transition:transform .15s ease,background .15s ease !important;
-}
-
-#authGate .google-auth{
-  background:#151515 !important;
-  color:#fff !important;
-  border:1px solid #303030 !important;
-}
-
-#authGate .apple-auth{
-  background:#fff !important;
-  color:#090909 !important;
-  border:1px solid #fff !important;
-}
-
-#authGate .social-auth-btn:active{
-  transform:scale(.98) !important;
-}
-
-#authGate .social-icon{
-  width:24px !important;
-  height:24px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  font-size:18px !important;
-  font-weight:900 !important;
-}
-
-/* Error messages */
-#authGate [id$="Error"]{
-  color:#ff5570 !important;
-  font-size:13px !important;
-  margin-top:8px !important;
-}
-
-/* Mobile polish */
-@media(max-height:720px){
-  #authGate{
-    align-items:flex-start !important;
-    padding-top:30px !important;
-    overflow-y:auto !important;
-  }
-
-  #authGate .auth-tabs{
-    margin-top:22px !important;
-  }
-}
-</style>
-
-
-
-
-<style>
-.player-sheet{
-  position:fixed;
-  left:50%;
-  bottom:0;
-  width:min(480px,100%);
-  max-height:70vh;
-  background:#151515;
-  color:#fff;
-  z-index:9999;
-  border-radius:18px 18px 0 0;
-  box-shadow:0 -12px 40px rgba(0,0,0,.55);
-  transform:translate(-50%,105%);
-  transition:transform .25s ease;
-  overflow:hidden;
-}
-.player-sheet.show{
-  transform:translate(-50%,0);
-}
-.player-sheet-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:18px 18px 14px;
-  border-bottom:1px solid rgba(255,255,255,.1);
-  font-size:18px;
-}
-.sheet-close{
-  width:34px;
-  height:34px;
-  border:0;
-  border-radius:50%;
-  background:rgba(255,255,255,.1);
-  color:#fff;
-  font-size:24px;
-  line-height:34px;
-  padding:0;
-  cursor:pointer;
-}
-.player-sheet-body{
-  max-height:calc(70vh - 70px);
-  overflow-y:auto;
-  padding:8px 12px 18px;
-}
-.sheet-episode{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  min-height:54px;
-  padding:0 12px;
-  margin:4px 0;
-  border-radius:10px;
-  color:#fff;
-  text-decoration:none;
-  background:rgba(255,255,255,.05);
-}
-.sheet-episode:hover{
-  background:rgba(255,255,255,.1);
-}
-.sheet-episode b{
-  font-size:10px;
-  letter-spacing:.08em;
-  opacity:.7;
-}
-</style>
-
-
-<style>
-.settings-body{
-  padding:8px 16px 24px;
-}
-.setting-row{
-  padding:16px 0;
-  border-bottom:1px solid rgba(255,255,255,.1);
-}
-.setting-row:last-child{
-  border-bottom:0;
-}
-.setting-row strong{
-  display:block;
-  font-size:15px;
-  margin-bottom:5px;
-}
-.setting-row small{
-  display:block;
-  font-size:12px;
-  opacity:.55;
-}
-.speed-options{
-  display:flex;
-  gap:7px;
-  margin-top:13px;
-}
-.speed-options button{
-  flex:1;
-  min-height:38px;
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:8px;
-  background:rgba(255,255,255,.06);
-  color:#fff;
-  font-size:13px;
-}
-.speed-options button.selected{
-  background:#fff;
-  color:#111;
-}
-.setting-toggle{
-  margin-top:12px;
-  min-width:58px;
-  height:34px;
-  border:0;
-  border-radius:17px;
-  background:rgba(255,255,255,.12);
-  color:#fff;
-  font-size:12px;
-  font-weight:700;
-}
-.setting-toggle.on{
-  background:#fff;
-  color:#111;
-}
-</style>
-
-
-<style id="four-column-drama-grid">
-  .sec .row,
-  .sec .rail,
-  .sec .cards,
-  .home .row,
-  .home .rail {
-    display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 12px !important;
-    overflow: visible !important;
-    width: 100% !important;
-  }
-
-  .sec .row > *,
-  .sec .rail > *,
-  .sec .cards > *,
-  .home .row > *,
-  .home .rail > * {
-    width: auto !important;
-    min-width: 0 !important;
-    flex: none !important;
-  }
-
-  @media (max-width: 700px) {
-    .sec .row,
-    .sec .rail,
-    .sec .cards,
-    .home .row,
-    .home .rail {
-      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-      gap: 7px !important;
-    }
-  }
-</style>
-
-
-
-
-<style id="fast-image-loading">
-img{content-visibility:auto}
-img:not([loading]){loading:lazy}
-</style>
-<script id="fast-image-loading">
-document.addEventListener("DOMContentLoaded",function(){
-  document.querySelectorAll("img").forEach(function(im){
-    if(!im.hasAttribute("loading")) im.setAttribute("loading","lazy");
-    im.decoding="async";
-  });
-});
-</script>
-  <meta name="2204b9070ab60adfbeb690654456b6c04d86ccdf" content="2204b9070ab60adfbeb690654456b6c04d86ccdf" />
-<style>
-html, body {
-  touch-action: manipulation;
-}
-</style>
-
-<style>
-.dh-video-ad{
-  position:absolute;
-  inset:0;
-  z-index:20;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  box-sizing:border-box;
-  background:rgba(0,0,0,.92);
-}
-.dh-video-ad.show{
-  display:flex;
-}
-.dh-video-ad-inner{
-  position:relative;
-  width:100%;
-  max-width:420px;
-  max-height:90%;
-  overflow:auto;
-  background:#111;
-  border-radius:14px;
-  padding:18px;
-  box-sizing:border-box;
-}
-.dh-video-ad-close{
-  position:absolute;
-  top:8px;
-  right:8px;
-  z-index:3;
-  width:40px;
-  height:40px;
-  border:0;
-  border-radius:50%;
-  background:rgba(255,255,255,.9);
-  color:#111;
-  font-size:24px;
-  line-height:40px;
-  text-align:center;
-  cursor:pointer;
-}
-.dh-video-ad-label{
-  margin:0 44px 12px 0;
-  color:#999;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-}
-</style>
-
-
-<style id="short-reels-loader-style">
-#shortReelsLoader{
-  position:fixed;
-  inset:0;
-  z-index:999999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#080808;
-  color:#fff;
-  opacity:1;
-  visibility:visible;
-  transition:opacity .35s ease,visibility .35s ease;
-}
-
-#shortReelsLoader.srl-hide{
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-}
-
-.srl-inner{
-  width:min(82vw,360px);
-  text-align:center;
-}
-
-.srl-logo{
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:clamp(25px,7vw,42px);
-  font-weight:900;
-  letter-spacing:3px;
-  line-height:1;
-  animation:srlPulse 1.5s ease-in-out infinite;
-}
-
-.srl-line{
-  width:100%;
-  height:3px;
-  margin:24px auto 20px;
-  border-radius:99px;
-  overflow:hidden;
-  background:#202020;
-  position:relative;
-}
-
-.srl-line::after{
-  content:"";
-  position:absolute;
-  top:0;
-  left:-35%;
-  width:35%;
-  height:100%;
-  border-radius:99px;
-  background:#e5092f;
-  animation:srlLoad 1.1s ease-in-out infinite;
-}
-
-.srl-dots{
-  display:flex;
-  justify-content:center;
-  gap:7px;
-}
-
-.srl-dots span{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#e5092f;
-  animation:srlDots 1.1s infinite ease-in-out;
-}
-
-.srl-dots span:nth-child(2){animation-delay:.15s}
-.srl-dots span:nth-child(3){animation-delay:.3s}
-
-@keyframes srlLoad{
-  0%{left:-35%}
-  50%{left:100%}
-  100%{left:100%}
-}
-
-@keyframes srlDots{
-  0%,80%,100%{transform:scale(.65);opacity:.35}
-  40%{transform:scale(1);opacity:1}
-}
-
-@keyframes srlPulse{
-  0%,100%{opacity:.78}
-  50%{opacity:1}
-}
-</style>
-
 </head>
 <body>
-<div id="shortReelsLoader" aria-label="Loading Short Reels">
-  <div class="srl-inner">
-    <div class="srl-logo">SHORT REELS</div>
-    <div class="srl-line"></div>
-    <div class="srl-dots" aria-hidden="true">
-      <span></span><span></span><span></span>
-    </div>
-  </div>
-</div>
 <div id="app"></div>
 <nav class="nav hide" id="nav" aria-label="Main"></nav>
 <div class="toast" id="toast" role="status"></div>
@@ -862,236 +175,9 @@ html, body {
 <script>
 /* ===== Settings ===== */
 const IMAGE_DIR = 'images/';                                  // covers: images/<cover>.png|jpg|webp
-const VIDEO_DIR = 'videos/';
-
-let PUBLIC_EPISODES = [];
-
-
-let DH_ADS = null;
-
-async function loadPublicAds(){
-  try{
-    const r = await fetch('/api/public/advertising?_=' + Date.now(), {
-      cache:'no-cache'
-    });
-    if(r.ok) DH_ADS = await r.json();
-  }catch(e){
-    DH_ADS = null;
-  }
-}
-
-function trackVisibleAds(){
-  const ads = document.querySelectorAll('.dh-ad[data-ad-type]');
-  if(!ads.length) return;
-
-  if(!window.DH_AD_OBSERVER){
-    window.DH_AD_OBSERVER = new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        const el = entry.target;
-
-        if(entry.isIntersecting && entry.intersectionRatio >= 0.5){
-          if(el.dataset.impressionSent === '1') return;
-
-          if(el._dhImpressionTimer) return;
-
-          el._dhImpressionTimer = setTimeout(()=>{
-            if(el.dataset.impressionSent === '1') return;
-
-            el.dataset.impressionSent = '1';
-
-            fetch('/api/public/ad-impression',{
-              method:'POST',
-              headers:{'Content-Type':'application/json'},
-              body:JSON.stringify({
-                ad_type: el.dataset.adType
-              }),
-              keepalive:true
-            }).catch(()=>{});
-          },1000);
-        }else{
-          if(el._dhImpressionTimer){
-            clearTimeout(el._dhImpressionTimer);
-            el._dhImpressionTimer = null;
-          }
-        }
-      });
-    },{
-      threshold:[0,0.5,1]
-    });
-  }
-
-  ads.forEach(ad=>{
-    if(ad.dataset.adObserved === '1') return;
-    ad.dataset.adObserved = '1';
-    window.DH_AD_OBSERVER.observe(ad);
-  });
-}
-
-function renderAd(type){
-  const a = DH_ADS;
-  if(!a || !a.enabled) return '';
-
-  const x = a[type];
-  if(!x || !x.enabled || !x.html) return '';
-
-  const content = x.link_url
-    ? `<a href="${x.link_url}" target="_blank" rel="noopener sponsored">${x.html}</a>`
-    : x.html;
-
-  return `<div class="dh-ad" data-ad-type="${type}">
-    <div class="dh-ad-label">Advertisement</div>
-    <div class="dh-ad-content">${content}</div>
-  </div>`;
-}
-
-function executeAdScripts(root){
-  if(!root) return;
-
-  root.querySelectorAll('script').forEach(oldScript => {
-    const newScript = document.createElement('script');
-
-    for(const attr of oldScript.attributes){
-      newScript.setAttribute(attr.name, attr.value);
-    }
-
-    newScript.textContent = oldScript.textContent || '';
-    oldScript.replaceWith(newScript);
-  });
-}
-
-function activateRenderedAds(root=document){
-  if(!root) return;
-
-  root.querySelectorAll('.dh-ad').forEach(ad => {
-    executeAdScripts(ad);
-  });
-
-  trackVisibleAds();
-}
-
-/* Automatically activate third-party ad scripts after SPA page renders. */
-if(!window.DH_AD_MUTATION_OBSERVER){
-  window.DH_AD_MUTATION_OBSERVER = new MutationObserver((mutations)=>{
-    let foundAd = false;
-
-    for(const mutation of mutations){
-      for(const node of mutation.addedNodes){
-        if(node.nodeType !== 1) continue;
-
-        if(node.matches && node.matches('.dh-ad')){
-          executeAdScripts(node);
-          foundAd = true;
-        }
-
-        if(node.querySelectorAll){
-          node.querySelectorAll('.dh-ad').forEach(ad=>{
-            executeAdScripts(ad);
-            foundAd = true;
-          });
-        }
-      }
-    }
-
-    if(foundAd) trackVisibleAds();
-  });
-
-  window.DH_AD_MUTATION_OBSERVER.observe(
-    document.getElementById('app'),
-    {childList:true, subtree:true}
-  );
-}
-
-const episodeUrl = (d, n) => {
-  const e = PUBLIC_EPISODES.find(
-    x => String(x.drama_id) === String(d.id) && Number(x.number) === Number(n)
-  );
-  return e?.video || e?.video_url || `${VIDEO_DIR}${d.id}/${n}.mp4`;
-};
-
-const thumbUrl = (d, n) => coverSrc(d);
-
-async function syncPublicDramas() {
-  try {
-    const r = await fetch('/api/public/dramas', { cache: 'no-cache' });
-    if (!r.ok) return;
-
-    const publicDramas = await r.json();
-    if (!Array.isArray(publicDramas) || !publicDramas.length) return;
-
-    const byId = new Map(publicDramas.map(d => [String(d.id), d]));
-
-    DRAMAS.forEach(d => {
-      const live = byId.get(String(d.id));
-      if (!live) return;
-
-      if (live.title) d.title = live.title;
-      if (live.description != null) d.desc = live.description;
-      if (live.category) d.cat = live.category;
-      if (Array.isArray(live.tags)) d.tags = live.tags.map(String).map(x => x.toLowerCase());
-      if (live.cover) d.cover = live.cover;
-    });
-
-    // Add dramas created from the Admin panel that aren't in the
-    // original frontend seed list.
-    publicDramas.forEach(d => {
-      if (DRAMAS.some(x => String(x.id) === String(d.id))) return;
-
-      DRAMAS.push({
-        id: d.id,
-        title: d.title || '',
-        cover: d.cover || '',
-        eps: 0,
-        tags: Array.isArray(d.tags)
-          ? d.tags.map(String).map(x => x.toLowerCase())
-          : [],
-        cat: d.category || '',
-        rating: 0,
-        views: 0,
-        desc: d.description || ''
-      });
-    });
-
-  } catch (e) {
-    console.log('Drama sync failed:', e);
-  }
-}
-
-async function syncPublicEpisodes() {
-  try {
-    const r = await fetch('/api/public/episodes?_=' + Date.now());
-    if (!r.ok) return;
-
-    PUBLIC_EPISODES = await r.json();
-
-    // Remove Continue Watching entries for dramas with no remaining episodes.
-    const activeDramaIds = new Set(
-      PUBLIC_EPISODES.map(e => String(e.drama_id))
-    );
-    let progChanged = false;
-    for (const id of Object.keys(prog)) {
-      if (!activeDramaIds.has(String(id))) {
-        delete prog[id];
-        progChanged = true;
-      }
-    }
-    if (progChanged) save('sd_prog', prog);
-
-    const counts = {};
-
-    for (const e of PUBLIC_EPISODES) {
-      const n = Number(e.number) || 0;
-      counts[e.drama_id] = Math.max(counts[e.drama_id] || 0, n);
-    }
-
-    DRAMAS.forEach(d => {
-      if (counts[d.id]) {
-        d.eps = counts[d.id];
-      }
-    });
-  } catch (e) {
-    console.log('Episode sync failed:', e);
-  }
-}
+const VIDEO_DIR = 'videos/';                                  // episodes: videos/<id>/<n>.mp4, thumbs: videos/<id>/<n>.jpg
+const episodeUrl = (d, n) => `${VIDEO_DIR}${d.id}/${n}.mp4`;
+const thumbUrl = (d, n) => `${VIDEO_DIR}${d.id}/${n}.jpg`;
 
 /* ===== Catalog =====
    Starts with the 10 dramas from the Android app's seed list.
@@ -1100,30 +186,21 @@ const D = (id, title, cover, eps, tags, cat, rating, views, desc) =>
   ({ id, title, cover, eps, tags: tags.toLowerCase().split(','), cat, rating, views, desc });
 let DRAMAS = [
  D("mafia_don_wife","The Mafia Don Hired Me as His Wife","mafia_don_cover_1789802199526",143,"CONTRACT LOVE,FAMILY DRAMA,SWEET ROMANCE","TRENDING",4.9,3820000,"Dumped by her ex-husband for her looks and left with little money, Nora responds to a “step-mother wanted” notice and arrives at Mafia boss Luca’s estate. She enters a contractual marriage with him to soothe his traumatized young son Leo. While helping Leo regain security, Nora heals her own low self-worth, and sincere romantic feelings slowly develop between Nora and Luca."),
+ D("she_quit_140m","She Quit and Took the 140M Deal","business_romance_cover_1789802210713",88,"CEO,BILLIONAIRE,REVENGE,SWEET LOVE","NEW",4.8,2100000,"Dumped by her ungrateful executive fiancé after securing the mega-corporation's landmark $140M takeover, senior strategist Maya hands in her resignation. She joins hands with the enigmatic venture capitalist billionaire Vincent Vance, triggering high-stakes corporate warfare and irresistible mutual attraction."),
  D("dragon_queen","Kneel Before The Dragon Queen","dragon_queen_cover_1789802223760",60,"FANTASY,DRAGON,ROYALTY,MAGIC","FANTASY",4.9,4500000,"Cast into exile as a disgraced princess on a misty medieval dock, Valery awakens the legendary silver Storm Dragon from the abyssal ocean. Returning to the imperial high court, she forces the treacherous usurpers to kneel beneath roaring dragon fire."),
  D("divine_mage","The Exiled Heir Is the Divine Mage","divine_mage_cover_1789802233959",54,"FANTASY,ACTION,MARTIAL ARTS,REBIRTH","HOTLIST",4.7,1890000,"Valdon was stripped of his royal birthright and tossed into the gladiatorial colosseum arena to perish. What his treacherous brothers did not foresee is that the ancient celestial mage dynasty bloodline awoke within him."),
  D("weakest_bastard","Weakest Bastard Shakes the World","divine_mage_cover_1789802233959",45,"MARTIAL ARTS,REVENGE,LEVEL UP","HOTLIST",4.9,3100000,"Born without a spiritual core and mocked by his entire sect as useless trash, a sudden celestial strike awakens an ancient forbidden god realm within his soul."),
  D("billion_dollar_empire","Billion Dollar Empire: Stolen Heir","business_romance_cover_1789802210713",53,"CEO,FAMILY DRAMA,REVENGE,SWEET ROMANCE","TRENDING",4.6,1450000,"Swapped in the maternity ward 25 years ago, a humble delivery driver discovers he is the sole heir to Manhattan's wealthiest family estate."),
+ D("outcast_queen","The Rise of the Outcast Queen","mafia_don_cover_1789802199526",65,"ROYALTY,PALACE,DRAMA,LOVE","NEW",4.8,2800000,"A castaway maiden disguised as a royal scribe outsmarts political court assassins to claim her rightful throne and capture the heart of the emperor."),
  D("hired_killer_dad","I Hired a Killer to Be My Dad","mafia_don_cover_1789802199526",32,"FAMILY,COMEDY,SUSPENSE,PROTECTION","HOTLIST",4.9,5200000,"Tired of being targeted by school bullies, 8-year-old Toby used his entire piggy bank savings to hire the underworld's most feared phantom hitman as his surrogate father."),
  D("boxing_champion","The 7-Year-Old Boxing Champion","divine_mage_cover_1789802233959",59,"ACTION,INSPIRATIONAL,FAMILY","TRENDING",4.7,1950000,"Born with legendary martial instincts, a tiny prodigy steps into the underground ring to save his injured father's boxing gym from corrupt syndicate bosses."),
+ D("contract_wife_don","The Don's Contract Wife to True Heiress","mafia_don_cover_1789802199526",56,"CONTRACT LOVE,MAFIA,HEIRESS,ROMANCE","NEW",4.9,4100000,"Bound by a 1-year secret marriage agreement with the fearsome head of the Luciano family, she conceals her true identity as the world's most elusive diamond heiress.")
 ];
 
 /* ===== Helpers ===== */
 const $ = s => document.querySelector(s);
 const app = $('#app');
 const byId = id => DRAMAS.find(d => d.id === id);
-
-function realEpisodeCount(d) {
-  try {
-    const saved = JSON.parse(localStorage.getItem('sd_episode_counts') || '{}');
-    if (saved[d.id] != null) return saved[d.id];
-  } catch (e) {}
-  return d.eps;
-}
-
-DRAMAS.forEach(d => {
-  d.eps = realEpisodeCount(d);
-});
 const hue = s => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 360, 7);
 const grad = d => { const h = hue(d.id); return `linear-gradient(160deg,hsl(${h} 45% 24%),hsl(${(h + 50) % 360} 50% 9%))`; };
 const P = {
@@ -1151,14 +228,7 @@ function imgFix(el) {
   const ex = ['png', 'jpg', 'jpeg', 'webp'], i = +el.dataset.i || 0;
   if (i < ex.length - 1) { el.dataset.i = i + 1; el.src = `${IMAGE_DIR}${el.dataset.n}.${ex[i + 1]}`; } else el.remove();
 }
-const coverSrc = d => {
-  const c = String(d.cover || '');
-  if (!c) return '';
-  if (c.startsWith('/uploads/') || c.startsWith('http://') || c.startsWith('https://')) return c;
-  return `${IMAGE_DIR}${c}.png`;
-};
-
-const imgTag = d => `<img src="${coverSrc(d)}" data-n="${d.cover}" data-i="0" alt="" onerror="imgFix(this)">`;
+const imgTag = d => `<img src="${IMAGE_DIR}${d.cover}.png" data-n="${d.cover}" data-i="0" alt="" loading="lazy" onerror="imgFix(this)">`;
 const cover = (d, fill) => `<div class="cover${fill ? ' fill' : ''}" style="--g:${grad(d)}"><span class="t">${d.title}</span>${imgTag(d)}</div>`;
 
 let toastT;
@@ -1191,74 +261,25 @@ function rmProg(e, id) { e.stopPropagation(); delete prog[id]; save('sd_prog', p
 const poster = (d, o = {}) => `<div class="poster"><a href="#/drama/${d.id}" aria-label="${d.title}">${cover(d)}</a>${heartBtn(d)}<span class="pep">${o.ep ? 'EP ' + o.ep : d.eps + ' EP'}</span>${o.x ? `<button class="px" aria-label="Remove from Continue Watching" onclick="rmProg(event,'${d.id}')">${ic('close', 14)}</button>` : ''}${o.pct != null ? `<div class="pbar"><b style="width:${o.pct}%"></b></div>` : ''}</div>`;
 const row = (kick, title, list, fn = poster) => list.length ? `<section class="sec" style="padding-bottom:0"><div class="kick">${kick}</div><h2 class="serif">${title}</h2></section><div class="scroller">${list.map(d => fn(d)).join('')}</div>` : '';
 
-let PUBLIC_HOMEPAGE = {
-  hero: [],
-  new_releases: [],
-  trending: [],
-  for_you: [],
-  popular: []
-};
-
-async function syncPublicHomepage() {
-  try {
-    const r = await fetch('/api/homepage', { cache: 'no-cache' });
-    if (!r.ok) return;
-    const h = await r.json();
-    if (h && typeof h === 'object') PUBLIC_HOMEPAGE = h.placements || h;
-  } catch (e) {
-    console.log('Homepage sync failed:', e);
-  }
-}
-
 /* ===== Views ===== */
 let timer;
 let browseCat = 'COLLECTION', sq = '', sf = '';
 const views = {
  home() {
-  const heroItems = Array.isArray(PUBLIC_HOMEPAGE.hero)
-    ? PUBLIC_HOMEPAGE.hero
-    : [];
-
-  const feat = heroItems
-    .map(item => {
-      const id = typeof item === "object" ? item.id : item;
-      return DRAMAS.find(d => String(d.id) === String(id));
-    })
-    .filter(d => d && PUBLIC_EPISODES.some(e => String(e.drama_id) === String(d.id)));
-  const availableDramas = DRAMAS.filter(d =>
-    PUBLIC_EPISODES.some(e => String(e.drama_id) === String(d.id))
-  );
-
-  const placementDramas = section => {
-    const items = Array.isArray(PUBLIC_HOMEPAGE[section])
-      ? PUBLIC_HOMEPAGE[section]
-      : [];
-    return items
-      .map(item => {
-        const id = typeof item === "object" ? item.id : item;
-        return availableDramas.find(d => String(d.id) === String(id));
-      })
-      .filter(Boolean);
-  };
-
+  const feat = [...DRAMAS].sort((a, b) => b.views - a.views).slice(0, 5);
   const cont = Object.entries(prog).sort((a, b) => b[1].ts - a[1].ts).map(([id, p]) => ({ d: byId(id), p })).filter(x => x.d);
   app.innerHTML =
    `<section class="hero"><div class="track" id="track">${feat.map(d => `
      <article class="slide">${cover(d, true)}<div class="shade"></div>
-      <div class="brand"><i></i><div><small>SHORT</small><b>REELS</b><u></u></div></div>
+      <div class="brand"><i></i><div><small>FREE</small><b>SHORT DRAMA</b><u></u></div></div>
       ${heartBtn(d)}<span class="cnt">${d.eps} EP</span>
       <div class="cs"><div class="kick">Cover story</div><div class="btns"><a class="btn" href="#/watch/${d.id}/1">${ic('tri', 18)}Play</a><a class="btn ghost" href="#/drama/${d.id}">More info</a></div></div>
      </article>`).join('')}</div><div class="dots" id="dots">${feat.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</div></section>` +
-   renderAd('home_banner') +
    row('Resume', 'Continue Watching', cont.map(x => x.d), d => { const p = prog[d.id]; return poster(d, { ep: p.ep, x: 1, pct: p.d ? Math.min(100, Math.round(p.t / p.d * 100)) : 0 }); }) +
-   row('This week', 'Trending Now', placementDramas('trending')) +
-   row('Just dropped', 'New Releases', [...placementDramas('new_releases')].sort((a, b) => {
-     const aTime = new Date(a.created_at || a.createdAt || a.uploaded_at || a.uploadedAt || a.updated_at || 0).getTime();
-     const bTime = new Date(b.created_at || b.createdAt || b.uploaded_at || b.uploadedAt || b.updated_at || 0).getTime();
-     return bTime - aTime;
-   })) +
-   row('For you', 'For You', placementDramas('for_you')) +
-   row('Popular', 'Popular', placementDramas('popular'));
+   row('This week', 'Trending Now', DRAMAS.filter(d => d.cat === 'TRENDING')) +
+   row('Just dropped', 'New Releases', DRAMAS.filter(d => d.cat === 'NEW')) +
+   row('The edit', 'Hot List', DRAMAS.filter(d => d.cat === 'HOTLIST')) +
+   row('By genre', 'Fantasy', DRAMAS.filter(d => d.cat === 'FANTASY'));
   const tr = $('#track'), dots = [...document.querySelectorAll('#dots i')];
   const cur = () => Math.round(tr.scrollLeft / tr.clientWidth);
   tr.addEventListener('scroll', () => { const c = cur(); dots.forEach((x, i) => x.classList.toggle('on', i === c)); }, { passive: true });
@@ -1273,12 +294,7 @@ const views = {
  },
  browse() {
   const cats = ['COLLECTION', 'NEW', 'HOTLIST', 'FANTASY', 'ASIA', 'FEMALE', 'MALE'];
-  const availableDramas = DRAMAS.filter(d =>
-    PUBLIC_EPISODES.some(e => String(e.drama_id) === String(d.id))
-  );
-  const list = browseCat === 'COLLECTION'
-    ? availableDramas
-    : availableDramas.filter(d => d.cat === browseCat);
+  const list = browseCat === 'COLLECTION' ? DRAMAS : DRAMAS.filter(d => d.cat === browseCat);
   app.innerHTML = `<div class="ph"><h1>Browse</h1><p>Channels · curated shelves</p></div>
    <div class="chips">${cats.map(c => `<button class="chip" aria-pressed="${c === browseCat}" onclick="browseCat='${c}';views.browse()">${c}</button>`).join('')}</div>` +
    (list.length ? `<div class="g3">${list.map(d => poster(d)).join('')}</div>` : '<p class="empty">Nothing on this shelf yet. Check back soon.</p>');
@@ -1287,175 +303,46 @@ const views = {
   const l = DRAMAS.filter(d => favs.has(d.id));
   app.innerHTML = `<div class="ph"><h1>My List</h1><p>Favorites &amp; saved episodes</p></div>
    <section class="sec" style="padding-top:8px"><div class="kick">Your list</div><h2 class="serif" style="margin-bottom:12px">Favorites</h2></section>` +
-   (l.length ? `<div class="g3">${l.map(d => `<div class="mylist-card" style="position:relative"><button class="mylist-remove" onclick="toggleFav(event,'${d.id}')" aria-label="Remove from My List" style="position:absolute;top:8px;right:8px;left:auto;z-index:5;width:30px;height:30px;border:0;border-radius:50%;background:rgba(0,0,0,.75);color:#fff;font-size:20px;line-height:30px;padding:0">×</button>${poster(d)}</div>`).join('')}</div>` : '<p class="empty">Nothing saved yet. Tap the heart on any drama and it will show up here. Your list is kept on this device.</p>') +
-   `<p class="foot">Short Reels · Web</p>`;
+   (l.length ? `<div class="g3">${l.map(d => poster(d)).join('')}</div>` : '<p class="empty">Nothing saved yet. Tap the heart on any drama and it will show up here. Your list is kept on this device.</p>') +
+   `<p class="foot">Free Short Drama · Web</p>`;
  },
  drama(id) {
   const d = byId(id); if (!d) return notFound();
-  const p = prog[id];
-  const availableEpisodes = Array.from(
-    new Map(
-      PUBLIC_EPISODES
-        .filter(e => String(e.drama_id) === String(d.id))
-        .sort((a,b) => Number(a.number) - Number(b.number))
-        .map(e => [Number(e.number), e])
-    ).values()
-  );
-  const realCount = availableEpisodes.length;
-  const firstEpisode = availableEpisodes[0]?.number || 1;
-  const resume = p && availableEpisodes.some(e => Number(e.number) === Number(p.ep)) && (p.ep > 1 || p.t > 5);
-  document.title = `${d.title} · Short Reels`;
+  const p = prog[id], resume = p && (p.ep > 1 || p.t > 5);
+  document.title = `${d.title} · Free Short Drama`;
   app.innerHTML = `<section class="dh">${cover(d, true)}<div class="shade"></div>
     <div class="tb"><a class="ib" href="#/home" aria-label="Back">${ic('back', 26)}</a><button class="ib" aria-label="Share" onclick="shareIt('${d.id}')">${ic('share', 22)}</button></div>
     <div class="dtags">${d.tags.slice(0, 3).map(t => `<span class="tag">${t}</span>`).join('')}</div></section>
-   <div class="dbody"><h1 class="serif">${d.title}</h1><div class="epc">${ic('tri', 14)}${realCount} Episodes</div>
-    <div class="acts"><a class="btn" href="#/watch/${d.id}/${resume ? p.ep : firstEpisode}">${ic('tri', 18)}${resume ? 'Resume EP ' + p.ep : 'Play'}</a>${heartBtn(d, 'sq', 26)}</div>
+   <div class="dbody"><h1 class="serif">${d.title}</h1><div class="epc">${ic('tri', 14)}${d.eps} Episodes</div>
+    <div class="acts"><a class="btn" href="#/watch/${d.id}/${resume ? p.ep : 1}">${ic('tri', 18)}${resume ? 'Resume EP ' + p.ep : 'Play'}</a>${heartBtn(d, 'sq', 26)}</div>
     <div class="kick">Storyline</div><p class="story">${d.desc}</p>
-    <div class="eph"><b>EPISODES</b><span>${realCount} Clips</span></div>
-    <div class="eps">${(() => {
-    const available = PUBLIC_EPISODES
-      .filter(e => String(e.drama_id) === String(d.id))
-      .sort((a,b) => Number(a.number) - Number(b.number));
-
-    return available.map(e => {
-      const n = Number(e.number);
-      return `<a class="ep${p && p.ep === n ? ' cur' : ''}" href="#/watch/${d.id}/${n}">${d.cover ? `<img src="${thumbUrl(d, n)}" alt="" loading="lazy" onerror="this.remove()">` : `<div class="ep-fallback" style="--g:${grad(d)}">${d.title}</div>`}<span>EP ${n}</span></a>`;
-    }).join('');
-  })()}</div></div>`;
+    <div class="eph"><b>EPISODES</b><span>${d.eps} Clips</span></div>
+    <div class="eps">${Array.from({ length: d.eps }, (_, i) => `<a class="ep${p && p.ep === i + 1 ? ' cur' : ''}" href="#/watch/${d.id}/${i + 1}"><img src="${thumbUrl(d, i + 1)}" alt="" loading="lazy" onerror="this.remove()"><span>EP ${i + 1}</span></a>`).join('')}</div></div>`;
  },
  watch(id, n) {
   const d = byId(id); if (!d) return notFound();
-  const availableEpisodes = Array.from(
-    new Map(
-      PUBLIC_EPISODES
-        .filter(e => String(e.drama_id) === String(d.id))
-        .sort((a,b) => Number(a.number) - Number(b.number))
-        .map(e => [Number(e.number), e])
-    ).values()
-  );
-  const episodeNumbers = availableEpisodes
-    .map(e => Number(e.number))
-    .filter(Number.isFinite);
-  n = Number(n);
-  if (!episodeNumbers.includes(n)) n = episodeNumbers[0] || 1;
-  const realCount = episodeNumbers.length || d.eps;
+  n = Math.min(Math.max(parseInt(n) || 1, 1), d.eps);
   document.title = `${d.title} · Episode ${n}`;
-  const go = k => {
-    k = Number(k);
-    if (!Number.isFinite(k)) return;
-    location.hash = `#/watch/${d.id}/${k}`;
-    setTimeout(() => {
-      if (location.hash === `#/watch/${d.id}/${k}` && typeof router === 'object' && typeof router.watch === 'function') {
-        router.watch(d.id, k);
-      }
-    }, 0);
-  };
-  app.innerHTML = renderAd('episode_banner') + `<div class="pl" id="pl"><video id="v" playsinline autoplay preload="auto" fetchpriority="high" src="${episodeUrl(d, n)}"></video>
+  const go = k => { location.hash = `#/watch/${d.id}/${k}`; };
+  app.innerHTML = `<div class="pl" id="pl"><video id="v" playsinline autoplay src="${episodeUrl(d, n)}"></video>
    <div class="pmsg" id="pm" hidden>This episode isn't available yet.<br>Please try another episode.</div>
-   <div class="dh-video-ad" id="videoAd" aria-hidden="true">
-    <div class="dh-video-ad-inner">
-     <button class="dh-video-ad-close" id="videoAdClose" type="button" aria-label="Close advertisement">&times;</button>
-     <div class="dh-video-ad-label">Advertisement</div>
-     <div id="videoAdContent"></div>
-    </div>
-   </div>
- <div class="ui" id="ui">
-    <div class="pl-top"><a class="ib" href="#/drama/${d.id}" aria-label="Back">${ic('back', 26)}</a><span class="g"></span><button class="ib" aria-label="Share" onclick="shareIt('${d.id}')">${ic('share', 22)}</button><button class="ib" id="epSheetBtn" aria-label="All episodes">${ic('queue', 24)}</button><button class="ib" id="spd" aria-label="Settings">${ic('gear', 24)}</button></div>
-    <div class="pl-logo"><i></i><span>SHORT<br>REELS</span></div>
-    <div class="pl-mid"><button id="pv" aria-label="Previous episode" ${episodeNumbers.indexOf(n) > 0 ? '' : 'disabled'}>${ic('prev', 28)}</button><button id="rw" aria-label="Back 10 seconds">${ic('rew', 34)}</button><button class="pp" id="pp" aria-label="Play or pause">${ic('pause', 34)}</button><button id="fw" aria-label="Forward 10 seconds">${ic('fwd', 34)}</button><button id="nx" aria-label="Next episode" ${episodeNumbers.indexOf(n) !== -1 && episodeNumbers.indexOf(n) < episodeNumbers.length - 1 ? '' : 'disabled'}>${ic('next', 28)}</button></div>
-    <div class="pl-bot"><h1 class="serif">${d.title}</h1><div class="e">Episode ${n}/${realCount}</div><div class="tm"><span id="cu">0:00</span><span id="du">0:00</span></div><div class="bar" id="bar"><b id="fl"></b></div></div>
+   <div class="ui" id="ui">
+    <div class="pl-top"><a class="ib" href="#/drama/${d.id}" aria-label="Back">${ic('back', 26)}</a><span class="g"></span><button class="ib" aria-label="Share" onclick="shareIt('${d.id}')">${ic('share', 22)}</button><a class="ib" href="#/drama/${d.id}" aria-label="All episodes">${ic('queue', 24)}</a><button class="ib" id="spd" aria-label="Playback speed">${ic('gear', 24)}</button></div>
+    <div class="pl-logo"><i></i><span>FREE<br>SHORT DRAMA</span></div>
+    <div class="pl-mid"><button id="pv" aria-label="Previous episode" ${n > 1 ? '' : 'disabled'}>${ic('prev', 28)}</button><button id="rw" aria-label="Back 10 seconds">${ic('rew', 34)}</button><button class="pp" id="pp" aria-label="Play or pause">${ic('pause', 34)}</button><button id="fw" aria-label="Forward 10 seconds">${ic('fwd', 34)}</button><button id="nx" aria-label="Next episode" ${n < d.eps ? '' : 'disabled'}>${ic('next', 28)}</button></div>
+    <div class="pl-bot"><h1 class="serif">${d.title}</h1><div class="e">Episode ${n}/${d.eps}</div><div class="tm"><span id="cu">0:00</span><span id="du">0:00</span></div><div class="bar" id="bar"><b id="fl"></b></div></div>
    </div></div>`;
   const v = $('#v'), ui = $('#ui'), pp = $('#pp'), fmt = s => isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '0:00';
-
-  const videoAd = $('#videoAd');
-  const videoAdContent = $('#videoAdContent');
-  const videoAdClose = $('#videoAdClose');
-
-  const VIDEO_AD_INTERVAL = 120;
-  let videoAdWatchTime = 0;
-  let videoAdShowing = false;
-  let videoAdLastTime = null;
   let hideT, lastSave = 0;
-
-  function closeVideoAd(){
-    if(!videoAd) return;
-
-    videoAdShowing = false;
-    videoAd.classList.remove('show');
-    videoAd.setAttribute('aria-hidden', 'true');
-
-    if(videoAdContent){
-      videoAdContent.innerHTML = '';
-    }
-
-    videoAdLastTime = v.currentTime;
-
-    v.play().catch(() => {
-      pp.innerHTML = ic('tri', 38);
-    });
-  }
-
-  function showVideoAd(){
-    const ad = DH_ADS?.video_preroll;
-
-    if(
-      videoAdShowing ||
-      !DH_ADS?.enabled ||
-      !ad?.enabled ||
-      !ad?.html
-    ){
-      return;
-    }
-
-    videoAdShowing = true;
-    videoAdWatchTime = 0;
-    videoAdLastTime = v.currentTime;
-
-    v.pause();
-
-    if(videoAdContent){
-      videoAdContent.innerHTML = ad.html;
-      executeAdScripts(videoAdContent);
-    }
-
-    if(videoAd){
-      videoAd.classList.add('show');
-      videoAd.setAttribute('aria-hidden', 'false');
-    }
-  }
-
-  videoAdClose?.addEventListener('click', closeVideoAd);
   const showUI = () => { ui.classList.remove('off'); clearTimeout(hideT); if (!v.paused) hideT = setTimeout(() => ui.classList.add('off'), 3200); };
   $('#pl').addEventListener('click', e => { if (e.target.closest('button,a,.bar')) return; ui.classList.contains('off') ? showUI() : ui.classList.add('off'); });
   pp.onclick = () => { v.paused ? v.play() : v.pause(); showUI(); };
   $('#rw').onclick = () => { v.currentTime = Math.max(0, v.currentTime - 10); showUI(); };
   $('#fw').onclick = () => { v.currentTime = Math.min(v.duration || 1e9, v.currentTime + 10); showUI(); };
-
-  $('#pv').onclick = () => {
-    const pos = episodeNumbers.indexOf(Number(n));
-    if (pos > 0) {
-      const prevEp = episodeNumbers[pos - 1];
-      location.hash = `#/watch/${d.id}/${prevEp}`;
-      setTimeout(() => {
-        if (typeof router === 'object' && typeof router.watch === 'function') {
-          router.watch(d.id, prevEp);
-        }
-      }, 50);
-    }
-  };
-
-  $('#nx').onclick = () => {
-    const pos = episodeNumbers.indexOf(Number(n));
-    if (pos !== -1 && pos < episodeNumbers.length - 1) {
-      const nextEp = episodeNumbers[pos + 1];
-      location.hash = `#/watch/${d.id}/${nextEp}`;
-      setTimeout(() => {
-        if (typeof router === 'object' && typeof router.watch === 'function') {
-          router.watch(d.id, nextEp);
-        }
-      }, 50);
-    }
-  };
+  $('#pv').onclick = () => go(n - 1);
+  $('#nx').onclick = () => go(n + 1);
+  const rates = [1, 1.25, 1.5, 2]; let ri = 0;
+  $('#spd').onclick = () => { ri = (ri + 1) % rates.length; v.playbackRate = rates[ri]; toast(`Speed ${rates[ri]}x`); showUI(); };
   $('#bar').onclick = e => { const r = e.currentTarget.getBoundingClientRect(); if (v.duration) v.currentTime = (e.clientX - r.left) / r.width * v.duration; showUI(); };
   v.addEventListener('loadedmetadata', () => {
     $('#du').textContent = fmt(v.duration);
@@ -1464,224 +351,20 @@ const views = {
   v.addEventListener('timeupdate', () => {
     $('#cu').textContent = fmt(v.currentTime);
     $('#fl').style.width = (v.duration ? v.currentTime / v.duration * 100 : 0) + '%';
-
-    if(
-      !v.paused &&
-      !v.seeking &&
-      !videoAdShowing &&
-      Number.isFinite(videoAdLastTime) &&
-      Number.isFinite(v.currentTime)
-    ){
-      const delta = v.currentTime - videoAdLastTime;
-
-      // Only count normal forward playback. This prevents seeking from
-      // accidentally generating advertisement impressions.
-      if(delta > 0 && delta < 2){
-        videoAdWatchTime += delta;
-
-        if(videoAdWatchTime >= VIDEO_AD_INTERVAL){
-          videoAdWatchTime = 0;
-          showVideoAd();
-        }
-      }
-    }
-
-    videoAdLastTime = v.currentTime;
-
-    if (Date.now() - lastSave > 2000 && v.currentTime > 1) {
-      lastSave = Date.now();
-      prog[d.id] = {
-        ep: n,
-        t: v.currentTime,
-        d: v.duration || 0,
-        ts: Date.now()
-      };
-      save('sd_prog', prog);
-    }
+    if (Date.now() - lastSave > 2000 && v.currentTime > 1) { lastSave = Date.now(); prog[d.id] = { ep: n, t: v.currentTime, d: v.duration || 0, ts: Date.now() }; save('sd_prog', prog); }
   });
-  v.addEventListener('play', () => {
-    pp.innerHTML = ic('pause', 34);
-    if(!Number.isFinite(videoAdLastTime)) videoAdLastTime = v.currentTime;
-    showUI();
-  });
-
-  v.addEventListener('pause', () => {
-    pp.innerHTML = ic('tri', 38);
-    showUI();
-  });
-
-  v.addEventListener('seeking', () => {
-    videoAdLastTime = v.currentTime;
-  });
-  v.addEventListener('ended', () => {
-      const nums = PUBLIC_EPISODES
-        .filter(e => String(e.drama_id) === String(d.id))
-        .map(e => Number(e.number))
-        .filter(Number.isFinite)
-        .sort((a,b) => a - b);
-
-      const pos = nums.indexOf(Number(n));
-
-      if (pos !== -1 && pos < nums.length - 1) {
-        go(nums[pos + 1]);
-      }
-    });
+  v.addEventListener('play', () => { pp.innerHTML = ic('pause', 34); showUI(); });
+  v.addEventListener('pause', () => { pp.innerHTML = ic('tri', 38); showUI(); });
+  v.addEventListener('ended', () => { if (n < d.eps) go(n + 1); });
   v.addEventListener('error', () => { v.hidden = true; $('#pm').hidden = false; ui.classList.remove('off'); });
   v.play().catch(() => { pp.innerHTML = ic('tri', 38); });
   showUI();
-  this.setupPlayerMenus();
-  activateRenderedAds(app);
- },
-
- setupPlayerMenus() {
-  const epBtn = document.getElementById('epSheetBtn');
-  const settingsBtn = document.getElementById('spd');
-
-  document.getElementById('episodeSheet')?.remove();
-  document.getElementById('settingsSheet')?.remove();
-
-  if (epBtn) {
-    const sheet = document.createElement('div');
-    sheet.id = 'episodeSheet';
-    sheet.className = 'player-sheet';
-    sheet.innerHTML = `
-      <div class="player-sheet-head">
-        <b>Episodes</b>
-        <button class="sheet-close" aria-label="Close">×</button>
-      </div>
-      <div class="player-sheet-body" id="episodeSheetBody"></div>
-    `;
-    document.body.appendChild(sheet);
-
-    epBtn.onclick = e => {
-      console.log('EPISODES BUTTON CLICKED');
-      e.preventDefault();
-      e.stopPropagation();
-
-      const d = byId(String(location.hash.split('/')[2]));
-      if (!d) return;
-
-      const currentEp = Number(location.hash.split('/')[3]);
-
-      const episodes = PUBLIC_EPISODES
-        .filter(e => String(e.drama_id) === String(d.id))
-        .sort((a,b) => Number(a.number) - Number(b.number));
-
-      document.getElementById('episodeSheetBody').innerHTML = episodes.map(e => {
-        const num = Number(e.number);
-        return `
-          <a class="sheet-episode" href="#/watch/${d.id}/${num}">
-            <span>EP ${num}</span>
-            ${num === currentEp ? '<b>NOW PLAYING</b>' : ''}
-          </a>
-        `;
-      }).join('');
-
-      sheet.classList.add('show');
-    };
-
-    sheet.querySelector('.sheet-close').onclick = () => {
-      sheet.classList.remove('show');
-    };
-  }
-
-  if (settingsBtn) {
-    const settings = document.createElement('div');
-    settings.id = 'settingsSheet';
-    settings.className = 'player-sheet';
-    settings.innerHTML = `
-      <div class="player-sheet-head">
-        <b>Settings</b>
-        <button class="sheet-close" aria-label="Close">×</button>
-      </div>
-
-      <div class="settings-body">
-        <div class="setting-row">
-          <div>
-            <strong>Playback speed</strong>
-            <small id="speedLabel">1×</small>
-          </div>
-
-          <div class="speed-options">
-            <button type="button" data-speed="1">1×</button>
-            <button type="button" data-speed="1.25">1.25×</button>
-            <button type="button" data-speed="1.5">1.5×</button>
-            <button type="button" data-speed="2">2×</button>
-          </div>
-        </div>
-
-        <div class="setting-row">
-          <div>
-            <strong>Autoplay next episode</strong>
-            <small>Automatically play the next episode</small>
-          </div>
-          <button type="button" id="autoplayToggle" class="setting-toggle on">ON</button>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(settings);
-
-    settingsBtn.onclick = e => {
-      console.log('SETTINGS BUTTON CLICKED');
-      e.preventDefault();
-      e.stopPropagation();
-      settings.classList.add('show');
-    };
-
-    settings.querySelector('.sheet-close').onclick = () => {
-      settings.classList.remove('show');
-    };
-
-    const speedLabel = settings.querySelector('#speedLabel');
-
-    settings.querySelectorAll('[data-speed]').forEach(btn => {
-      btn.onclick = e => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const speed = Number(btn.dataset.speed);
-        const video = document.getElementById('v');
-
-        if (video) video.playbackRate = speed;
-
-        speedLabel.textContent = speed + '×';
-
-        settings.querySelectorAll('[data-speed]')
-          .forEach(x => x.classList.remove('selected'));
-
-        btn.classList.add('selected');
-      };
-    });
-
-    const autoplayToggle = settings.querySelector('#autoplayToggle');
-
-    autoplayToggle.onclick = e => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      autoplayToggle.classList.toggle('on');
-      autoplayToggle.textContent =
-        autoplayToggle.classList.contains('on') ? 'ON' : 'OFF';
-    };
-  }
  },
  reels() {
-  document.title = 'For You · Short Reels';
-  const reelDramas = DRAMAS.filter(d =>
-    PUBLIC_EPISODES.some(e => String(e.drama_id) === String(d.id))
-  );
-
-  app.innerHTML = `<div class="reels" id="reels">${[...reelDramas].sort((a, b) => b.views - a.views).map(d => `
+  document.title = 'For You · Free Short Drama';
+  app.innerHTML = `<div class="reels" id="reels">${[...DRAMAS].sort((a, b) => b.views - a.views).map(d => `
    <article class="reel" data-id="${d.id}">${cover(d, true)}
-    <video loop playsinline preload="${d.id === reelDramas[0]?.id ? 'auto' : 'metadata'}" data-src="${episodeUrl(
-      d,
-      Number(
-        PUBLIC_EPISODES
-          .filter(e => String(e.drama_id) === String(d.id))
-          .sort((a,b) => Number(a.number) - Number(b.number))[0]?.number || 1
-      )
-    )}"></video><div class="spin" hidden></div><div class="shade"></div>
+    <video muted loop playsinline preload="none" data-src="${episodeUrl(d, 1)}"></video><div class="spin" hidden></div><div class="shade"></div>
     ${heartBtn(d, 'hbtn', 26)}<button class="ib shr" aria-label="Share" onclick="shareIt('${d.id}')">${ic('share', 22)}</button>
     <div class="inf"><div class="kick">For you</div><h2 class="serif">${d.title}</h2><a class="btn" href="#/watch/${d.id}/1">${ic('tri', 18)}Watch series</a></div>
     <div class="rp"><b></b></div></article>`).join('')}</div>`;
@@ -1689,27 +372,8 @@ const views = {
   const io = new IntersectionObserver(es => es.forEach(e => {
    const v = e.target.querySelector('video'), sp = e.target.querySelector('.spin');
    if (!v) return;
-
-   if (e.isIntersecting) {
-     if (!v.src) {
-       v.src = v.dataset.src;
-       v.preload = 'auto';
-     }
-
-     if (e.intersectionRatio >= .6) {
-       sp.hidden = false;
-       v.muted = false;
-       v.volume = 1;
-       v.play().catch(() => {});
-     }
-   } else {
-     v.pause();
-   }
-  }), {
-   root,
-   rootMargin: '300px 0px',
-   threshold: [0, .6]
-  });
+   if (e.isIntersecting) { if (!v.src) { v.src = v.dataset.src; sp.hidden = false; } v.play().catch(() => {}); } else v.pause();
+  }), { root, threshold: .6 });
   root.querySelectorAll('.reel').forEach(r => {
    const v = r.querySelector('video'), sp = r.querySelector('.spin'), b = r.querySelector('.rp b');
    io.observe(r);
@@ -1724,16 +388,13 @@ function drawSearch() {
   const el = $('#sres'); if (!el) return;
   const s = sq.trim().toLowerCase();
   const filters = ['Recommend', 'NEW', 'Female', 'Male'];
-  const availableDramas = DRAMAS.filter(d =>
-    PUBLIC_EPISODES.some(e => String(e.drama_id) === String(d.id))
-  );
   let list = null;
-  if (s) list = availableDramas.filter(d => (d.title + ' ' + d.tags.join(' ') + ' ' + d.cat + ' ' + d.desc).toLowerCase().includes(s));
-  if (sf === 'Recommend') list = (list || availableDramas).filter(d => d.rating >= 4.8).sort((a, b) => b.rating - a.rating);
+  if (s) list = DRAMAS.filter(d => (d.title + ' ' + d.tags.join(' ') + ' ' + d.cat + ' ' + d.desc).toLowerCase().includes(s));
+  if (sf === 'Recommend') list = (list || DRAMAS).filter(d => d.rating >= 4.8).sort((a, b) => b.rating - a.rating);
   else if (sf) list = (list || DRAMAS).filter(d => d.cat === sf.toUpperCase());
   const chips = `<div class="chips" style="padding-top:8px">${filters.map(f => `<button class="chip" aria-pressed="${f === sf}" onclick="sf=(sf==='${f}'?'':'${f}');drawSearch()">${f}</button>`).join('')}</div>`;
   if (list === null) {
-    const pop = [...availableDramas].sort((a, b) => b.views - a.views).slice(0, 9);
+    const pop = [...DRAMAS].sort((a, b) => b.views - a.views).slice(0, 9);
     el.innerHTML = `<section class="sec" style="padding-top:20px"><div class="kick">Trending searches</div><h2 class="serif">Popular right now</h2></section>
       <div class="pop">${pop.map(d => `<button class="chip" onclick="sq=this.textContent;$('#q').value=sq;drawSearch()">${d.title}</button>`).join('')}</div>${chips}`;
   } else {
@@ -1754,430 +415,28 @@ function route() {
   const [v = 'home', a, b] = (location.hash.slice(2) || 'home').split('/');
   const full = v === 'drama' || v === 'watch';
   document.body.classList.toggle('lock', v === 'reels' || v === 'watch');
-
-  // Always restore normal page scrolling outside video/reels routes.
-  if(v !== 'reels' && v !== 'watch'){
-    document.body.classList.remove('lock');
-    document.documentElement.classList.remove('dh-reels-fullscreen');
-
-    document.body.style.overflow='';
-    document.body.style.touchAction='';
-    document.documentElement.style.overflow='';
-    document.documentElement.style.touchAction='';
-
-    const normalApp=document.getElementById('app');
-    if(normalApp){
-      normalApp.style.position='';
-      normalApp.style.inset='';
-      normalApp.style.width='';
-      normalApp.style.height='';
-      normalApp.style.maxWidth='';
-      normalApp.style.overflow='';
-      normalApp.style.touchAction='';
-    }
-
-    if(document.fullscreenElement && document.exitFullscreen){
-      document.exitFullscreen().catch(()=>{});
-    }
-  }
   app.classList.toggle('bare', v === 'reels' || v === 'watch');
   $('#nav').classList.toggle('hide', full);
   drawNav(v);
-  const titles = { home: 'Short Reels', search: 'Search', browse: 'Browse', list: 'My List' };
-  if (titles[v]) document.title = titles[v] + (v === 'home' ? '' : ' · Short Reels');
-  views[v] ? views[v](a, b) : views.home(a, b);
+  const titles = { home: 'Free Short Drama', search: 'Search', browse: 'Browse', list: 'My List' };
+  if (titles[v]) document.title = titles[v] + (v === 'home' ? '' : ' · Free Short Drama');
+  (views[v] || views.home)(a, b);
   if (v !== 'reels') window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', route);
 
 (async function init() {
-  const loader = document.getElementById('shortReelsLoader');
-
-  function hideShortReelsLoader() {
-    if (!loader) return;
-    loader.classList.add('srl-hide');
-    setTimeout(() => loader.remove(), 450);
-  }
-
-  // Render the first screen immediately.
+  try { const r = await fetch('dramas.json', { cache: 'no-cache' }); if (r.ok) { const j = await r.json(); if (Array.isArray(j) && j.length) DRAMAS = j; } } catch (e) {}
   route();
-
-  // Wait for the first browser paint, then fade out the loader.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(hideShortReelsLoader);
-  });
-
-  // Load the latest drama list in the background.
-  try {
-    const r = await fetch('dramas.json', { cache: 'no-cache' });
-    if (r.ok) {
-      const j = await r.json();
-      if (Array.isArray(j) && j.length) {
-        DRAMAS = j;
-        route();
-      }
-    }
-  } catch (e) {}
-
-  // Refresh public data in the background.
-  Promise.allSettled([
-    syncPublicDramas(),
-    syncPublicEpisodes(),
-    syncPublicHomepage()
-  ]).then(() => {
-    route();
-  });
+  let seen = false; try { seen = sessionStorage.getItem('sd_splash'); sessionStorage.setItem('sd_splash', '1'); } catch (e) {}
+  if (!seen && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const s = document.createElement('div'); s.className = 'splash';
+    s.innerHTML = '<div class="sp-in"><i class="sp-bar"></i><div><small>FREE</small><b>SHORT DRAMA</b><u></u></div></div>';
+    document.body.appendChild(s);
+    setTimeout(() => s.classList.add('out'), 2100);
+    setTimeout(() => s.remove(), 2700);
+  }
 })();
 </script>
-
-<style>
-#authGate{
- position:fixed;inset:0;z-index:99999;background:#080808;
- display:flex;align-items:center;justify-content:center;padding:24px;
-}
-.auth-box{width:100%;max-width:390px}
-.auth-logo{font-family:Arial,sans-serif;font-weight:900;font-size:28px;letter-spacing:3px;color:#fff;margin-bottom:8px}
-.auth-logo span{color:#c8102e}
-.auth-sub{color:#999;margin-bottom:28px}
-.auth-tabs{display:flex;margin-bottom:20px;border-bottom:1px solid #333}
-.auth-tab{flex:1;background:none;border:0;color:#777;padding:14px;font-size:16px}
-.auth-tab.active{color:#fff;border-bottom:2px solid #c8102e}
-.auth-form{display:none}
-.auth-form.active{display:block}
-.auth-input{
- width:100%;box-sizing:border-box;background:#151515;border:1px solid #333;
- color:#fff;padding:15px;border-radius:8px;margin-bottom:12px;font-size:15px
-}
-.auth-btn{
- width:100%;padding:15px;border:0;border-radius:8px;background:#c8102e;
- color:#fff;font-weight:bold;font-size:16px
-}
-.auth-error{color:#ff6878;font-size:13px;margin:10px 0;min-height:18px}
-</style>
-
-<script>
-
-loadPublicAds();
-
-if(!window.DH_AD_MUTATION_OBSERVER){
-  const appEl = document.getElementById('app');
-
-  if(appEl){
-    window.DH_AD_MUTATION_OBSERVER = new MutationObserver(()=>{
-      trackVisibleAds();
-    });
-
-    window.DH_AD_MUTATION_OBSERVER.observe(appEl,{
-      childList:true,
-      subtree:true
-    });
-
-    trackVisibleAds();
-  }
-}
-
-
-window.addEventListener('load', function(){
-  if (typeof syncPublicEpisodes === 'function') {
-
-    // Do not block the first page render while episodes are loading.
-    // Render the current route immediately.
-    if (typeof location !== 'undefined' && location.hash) {
-      window.dispatchEvent(new HashChangeEvent('hashchange'));
-    }
-
-    // Load episode data in the background.
-    syncPublicEpisodes().then(function(){
-      if (typeof location !== 'undefined' && location.hash) {
-        window.dispatchEvent(new HashChangeEvent('hashchange'));
-      }
-    }).catch(function(e){
-      console.log('Background episode sync failed:', e);
-    });
-
-    setInterval(async function(){
-      const before = JSON.stringify(PUBLIC_EPISODES);
-
-      await syncPublicEpisodes();
-
-      const after = JSON.stringify(PUBLIC_EPISODES);
-
-      if (before !== after && typeof location !== 'undefined' && location.hash) {
-        window.dispatchEvent(new HashChangeEvent('hashchange'));
-      }
-    }, 30000);
-  }
-});
-</script>
-
-
-
-<style>
-#sr-cookie-consent-v2{
-  position:fixed;
-  left:20px;
-  right:20px;
-  bottom:20px;
-  z-index:2147483647;
-  max-width:760px;
-  margin:0 auto;
-  padding:20px 22px;
-  background:rgba(18,18,18,.98);
-  color:#fff;
-  border:1px solid #303030;
-  border-radius:14px;
-  box-shadow:0 12px 45px rgba(0,0,0,.55);
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-#sr-cookie-consent-v2 .cookie-header{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:8px;
-}
-
-#sr-cookie-consent-v2 .cookie-icon{
-  font-size:20px;
-}
-
-#sr-cookie-consent-v2 .cookie-title{
-  font-size:16px;
-  font-weight:700;
-  letter-spacing:.1px;
-}
-
-#sr-cookie-consent-v2 .cookie-text{
-  margin:0;
-  color:#cfcfcf;
-  font-size:13px;
-  line-height:1.6;
-}
-
-#sr-cookie-consent-v2 .cookie-actions{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  margin-top:16px;
-}
-
-#sr-cookie-consent-v2 .cookie-links{
-  display:flex;
-  align-items:center;
-  gap:15px;
-}
-
-#sr-cookie-consent-v2 .privacy-link{
-  color:#ddd;
-  font-size:13px;
-  text-decoration:none;
-}
-
-#sr-cookie-consent-v2 .privacy-link:hover{
-  color:#fff;
-  text-decoration:underline;
-}
-
-#sr-cookie-accept-v2{
-  padding:10px 24px;
-  border:0;
-  border-radius:8px;
-  background:#c8102e;
-  color:#fff;
-  font-size:13px;
-  font-weight:700;
-  cursor:pointer;
-  transition:opacity .2s ease,transform .2s ease;
-}
-
-#sr-cookie-accept-v2:hover{
-  opacity:.9;
-  transform:translateY(-1px);
-}
-
-#sr-cookie-accept-v2:active{
-  transform:translateY(0);
-}
-
-@media(max-width:600px){
-  #sr-cookie-consent-v2{
-    left:12px;
-    right:12px;
-    bottom:12px;
-    padding:17px;
-  }
-
-  #sr-cookie-consent-v2 .cookie-actions{
-    align-items:stretch;
-    flex-direction:column-reverse;
-  }
-
-  #sr-cookie-consent-v2 .cookie-links{
-    justify-content:flex-start;
-  }
-
-  #sr-cookie-accept-v2{
-    width:100%;
-    padding:11px;
-  }
-}
-
-
-
-
-/* ===== REAL VIDEO ADS ===== */
-.dh-video-ad{
-  position:absolute!important;
-  inset:0!important;
-  z-index:999!important;
-  display:none!important;
-  align-items:center!important;
-  justify-content:center!important;
-  background:#000!important;
-}
-
-.dh-video-ad.show{
-  display:flex!important;
-}
-
-.dh-video-ad video{
-  width:100%!important;
-  height:100%!important;
-  object-fit:contain!important;
-  background:#000!important;
-}
-
-.dh-video-ad-close{
-  position:absolute!important;
-  top:18px!important;
-  right:18px!important;
-  z-index:1001!important;
-  width:42px!important;
-  height:42px!important;
-  border:0!important;
-  border-radius:50%!important;
-  background:rgba(0,0,0,.7)!important;
-  color:#fff!important;
-  font-size:28px!important;
-  line-height:42px!important;
-  text-align:center!important;
-}
-
-.dh-video-ad-label{
-  position:absolute!important;
-  top:20px!important;
-  left:18px!important;
-  z-index:1001!important;
-  padding:6px 10px!important;
-  border-radius:6px!important;
-  background:rgba(0,0,0,.65)!important;
-  color:#fff!important;
-  font:12px Arial,sans-serif!important;
-}
-
-</style>
-
-<div id="sr-cookie-consent-v2">
-  <div class="cookie-header">
-    <span class="cookie-icon">🍪</span>
-    <span class="cookie-title">Your Privacy Matters</span>
-  </div>
-
-  <p class="cookie-text">
-    Short Reels uses cookies and similar technologies to keep our website
-    secure, improve your experience, remember your preferences, and understand
-    how visitors use our service. We do not sell your personal information.
-  </p>
-
-  <div class="cookie-actions">
-    <div class="cookie-links">
-      <a class="privacy-link" href="/privacy">Privacy Policy</a>
-    </div>
-
-    <button type="button" id="sr-cookie-accept-v2" onclick="try{localStorage.setItem('sr_cookie_consent_v2','1')}catch(e){};document.getElementById('sr-cookie-consent-v2')?.remove()">Accept</button>
-  </div>
-</div>
-
-<script>
-(function(){
-  const notice = document.getElementById('sr-cookie-consent-v2');
-  const accept = document.getElementById('sr-cookie-accept-v2');
-
-  if (!notice || !accept) return;
-
-  const KEY = 'sr_cookie_consent_v2';
-
-  try {
-    if (localStorage.getItem(KEY) === '1') {
-      notice.remove();
-      return;
-    }
-  } catch (_) {}
-
-  notice.style.display = 'block';
-
-  accept.addEventListener('click', function(){
-    try {
-      localStorage.setItem(KEY, '1');
-    } catch (_) {}
-
-    notice.remove();
-  });
-})();
-
-
-
-
-
-
-
-
-/* ===== ANDROID REELS FULLSCREEN ===== */
-(function(){
-
-  let reelsFullscreen=false;
-
-  function isEpisodePage(){
-    const [route] = (location.hash.slice(2) || 'home').split('/');
-    return (
-      (route === 'watch' || route === 'episode') &&
-      !!document.querySelector('.pl')
-    );
-  }
-
-  function lockPage(){
-    const active = isEpisodePage();
-    document.documentElement.classList.toggle(
-      'dh-reels-fullscreen',
-      active
-    );
-    return active;
-  }
-
-  let lastRoute = location.hash;
-
-  setInterval(function(){
-    if(location.hash === lastRoute) return;
-
-    lastRoute = location.hash;
-
-    if(isEpisodePage()){
-      lockPage();
-    }else{
-      document.documentElement.classList.remove('dh-reels-fullscreen');
-    }
-  },250);
-
-  lockPage();
-
-})();
-
-</script>
-
-
-
-
 </body>
 </html>
-

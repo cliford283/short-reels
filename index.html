@@ -538,7 +538,12 @@ let DRAMAS = [
 
 /* ===== Helpers ===== */
 const $ = s => document.querySelector(s);
-const app = $('#app');
+const app = {
+  set innerHTML(html) {
+    const el = document.getElementById('app');
+    if (el) el.innerHTML = html;
+  }
+};
 const byId = id => DRAMAS.find(d => d.id === id);
 
 function realEpisodeCount(d) {

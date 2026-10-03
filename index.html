@@ -218,7 +218,8 @@ svg{display:block}
 .ui.off{opacity:0;pointer-events:none}
 .ui.off .pl-top{pointer-events:auto;opacity:1}
 .ui.off .pl-top .ib{pointer-events:auto}
-.pl-top{position:absolute;top:calc(10px + env(safe-area-inset-top));left:6px;right:6px;display:flex;align-items:center}
+.pl-top{position:absolute;z-index:20;top:calc(10px + env(safe-area-inset-top));left:6px;right:6px;display:flex;align-items:center;pointer-events:auto}
+.pl-top .ib{position:relative;z-index:21;pointer-events:auto;touch-action:manipulation}
 .pl-top .g{flex:1}
 .pl-logo{position:absolute;top:calc(64px + env(safe-area-inset-top));right:14px;display:flex;gap:4px;font-size:6px;font-weight:600;line-height:1.2;letter-spacing:.06em}
 .pl-logo i{width:2px;background:var(--red)}

@@ -1676,6 +1676,16 @@ function route() {
   const [v = 'home', a, b] = (location.hash.slice(2) || 'home').split('/');
   const full = v === 'drama' || v === 'watch';
   document.body.classList.toggle('lock', v === 'reels' || v === 'watch');
+
+  // Always restore normal page scrolling outside video/reels routes.
+  if(v !== 'reels' && v !== 'watch'){
+    document.body.classList.remove('lock');
+    document.documentElement.classList.remove('dh-reels-fullscreen');
+    document.body.style.overflow='';
+    document.body.style.touchAction='';
+    document.documentElement.style.overflow='';
+    document.documentElement.style.touchAction='';
+  }
   app.classList.toggle('bare', v === 'reels' || v === 'watch');
   $('#nav').classList.toggle('hide', full);
   drawNav(v);

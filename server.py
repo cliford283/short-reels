@@ -3338,6 +3338,12 @@ def admin_advertising():
                 incoming["html"]
             )
 
+        # Preserve direct ad links as well as HTML ad code.
+        if "link_url" in incoming:
+            ads[key]["link_url"] = str(
+                incoming["link_url"]
+            )
+
     save_catalog(data)
 
     record_activity(
@@ -3647,19 +3653,23 @@ def public_advertising():
         }),
         "drama_banner": ads.get("drama_banner", {
             "enabled": False,
-            "html": ""
+            "html": "",
+            "link_url": ""
         }),
         "episode_banner": ads.get("episode_banner", {
             "enabled": False,
-            "html": ""
+            "html": "",
+            "link_url": ""
         }),
         "in_feed": ads.get("in_feed", {
             "enabled": False,
-            "html": ""
+            "html": "",
+            "link_url": ""
         }),
         "video_preroll": ads.get("video_preroll", {
             "enabled": False,
-            "html": ""
+            "html": "",
+            "link_url": ""
         })
     })
 

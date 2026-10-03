@@ -932,11 +932,17 @@ function renderAd(type){
   if(!a || !a.enabled) return '';
 
   const x = a[type];
-  if(!x || !x.enabled || !x.html) return '';
+  if(!x || !x.enabled || (!x.html && !x.link_url)) return '';
 
-  const content = x.link_url
-    ? `<a href="${x.link_url}" target="_blank" rel="noopener sponsored">${x.html}</a>`
-    : x.html;
+  let content = x.html || '';
+
+  if(x.link_url){
+    if(content){
+      content = `<a href="${x.link_url}" target="_blank" rel="noopener sponsored">${content}</a>`;
+    }else{
+      content = `<a class="dh-ad-link" href="${x.link_url}" target="_blank" rel="noopener sponsored">Advertisement</a>`;
+    }
+  }
 
   return `<div class="dh-ad" data-ad-type="${type}">
     <div class="dh-ad-label">Advertisement</div>

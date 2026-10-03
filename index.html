@@ -212,8 +212,27 @@ svg{display:block}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 /* player */
-.pl{width:100%;max-width:100%;height:auto;margin:0 auto;position:relative;background:#000;overflow:hidden}.pl video{display:block;width:100%;height:auto;max-width:100%;object-fit:contain;background:#000}
-.pl video{display:block;width:100%;height:auto;max-width:100%;object-fit:contain;background:#000}
+.pl{
+  width:min(100vw,56.25dvh);
+  height:min(177.7778vw,100dvh);
+  aspect-ratio:9 / 16;
+  margin:0 auto;
+  position:relative;
+  background:#000;
+  overflow:hidden;
+}
+.pl video{
+  display:block;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  object-position:center;
+  background:#000;
+}
 .ui{position:absolute;inset:0;z-index:50;transition:opacity .25s}
 .ui.off{opacity:0;pointer-events:none}
 .ui.off .pl-top{pointer-events:auto;opacity:1}
@@ -252,6 +271,7 @@ svg{display:block}
  font-size:15px;
  margin-bottom:12px;
 }
+
 </style>
 
 <style>

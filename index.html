@@ -2086,6 +2086,19 @@ html.dh-reels-fullscreen .pl video{
   async function exitReelsFullscreen(){
     document.documentElement.classList.remove('dh-reels-fullscreen');
 
+    document.body.classList.remove('lock');
+
+    document.documentElement.style.overflow='';
+    document.documentElement.style.touchAction='';
+    document.body.style.overflow='';
+    document.body.style.touchAction='';
+
+    const app=document.getElementById('app');
+    if(app){
+      app.style.overflow='';
+      app.style.touchAction='';
+    }
+
     try{
       if(document.fullscreenElement &&
          document.exitFullscreen){
@@ -2094,6 +2107,22 @@ html.dh-reels-fullscreen .pl video{
     }catch(e){}
 
     reelsFullscreen=false;
+  }
+
+  function restoreNormalPage(){
+    document.documentElement.classList.remove('dh-reels-fullscreen');
+    document.body.classList.remove('lock');
+
+    document.documentElement.style.overflow='';
+    document.documentElement.style.touchAction='';
+    document.body.style.overflow='';
+    document.body.style.touchAction='';
+
+    const app=document.getElementById('app');
+    if(app){
+      app.style.overflow='';
+      app.style.touchAction='';
+    }
   }
 
   /*
@@ -2134,8 +2163,9 @@ html.dh-reels-fullscreen .pl video{
 
       if(isEpisodePage()){
         lockPage();
-      }else if(reelsFullscreen){
+      }else{
         exitReelsFullscreen();
+        restoreNormalPage();
       }
     }
   },250);

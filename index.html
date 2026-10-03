@@ -2011,7 +2011,7 @@ window.addEventListener('load', function(){
   }
 
   function lockPage(){
-    const active=isEpisodePage();
+    const active = isEpisodePage();
     document.documentElement.classList.toggle(
       'dh-reels-fullscreen',
       active
@@ -2019,132 +2019,21 @@ window.addEventListener('load', function(){
     return active;
   }
 
-  async function enterReelsFullscreen(){
-    if(!isEpisodePage()) return;
-
-    lockPage();
-
-    try{
-      if(!document.fullscreenElement &&
-         document.documentElement.requestFullscreen){
-
-        await document.documentElement.requestFullscreen({
-          navigationUI:'hide'
-        });
-
-        reelsFullscreen=true;
-      }
-    }catch(e){
-      /* Chrome can reject fullscreen if there is no user gesture.
-         CSS lock remains active as fallback. */
-    }
-  }
-
-  async function exitReelsFullscreen(){
-    document.documentElement.classList.remove('dh-reels-fullscreen');
-
-    document.body.classList.remove('lock');
-
-    document.documentElement.style.overflow='';
-    document.documentElement.style.touchAction='';
-    document.body.style.overflow='';
-    document.body.style.touchAction='';
-
-    const app=document.getElementById('app');
-    if(app){
-      app.style.overflow='';
-      app.style.touchAction='';
-    }
-
-    try{
-      if(document.fullscreenElement &&
-         document.exitFullscreen){
-        await document.exitFullscreen();
-      }
-    }catch(e){}
-
-    reelsFullscreen=false;
-  }
-
-  function restoreNormalPage(){
-    document.documentElement.classList.remove('dh-reels-fullscreen');
-    document.body.classList.remove('lock');
-
-    document.documentElement.style.overflow='';
-    document.documentElement.style.touchAction='';
-    document.body.style.overflow='';
-    document.body.style.touchAction='';
-
-    const app=document.getElementById('app');
-    if(app){
-      app.style.overflow='';
-      app.style.touchAction='';
-    }
-  }
-
-  /*
-   * Enter fullscreen from the actual tap that opens an episode.
-   * This is important because Android Chrome requires user activation.
-   */
-  document.addEventListener('click',function(e){
-
-    const link=e.target.closest('a');
-
-    if(link){
-      const href=link.getAttribute('href') || '';
-
-      if(
-        href.includes('#/episode/') ||
-        href.includes('#/watch/') ||
-        href.includes('/episode/')
-      ){
-        setTimeout(enterReelsFullscreen,0);
-      }
-    }
-
-    if(e.target.closest('#nx,#pv')){
-      setTimeout(enterReelsFullscreen,0);
-    }
-  },true);
-
-  /*
-   * Also catch SPA route changes.
-   */
-  let lastRoute=location.hash;
+  let lastRoute = location.hash;
 
   setInterval(function(){
-    const routeChanged=location.hash!==lastRoute;
+    if(location.hash === lastRoute) return;
 
-    if(routeChanged){
-      lastRoute=location.hash;
+    lastRoute = location.hash;
 
-      if(isEpisodePage()){
-        lockPage();
-      }else{
-        exitReelsFullscreen();
-        restoreNormalPage();
-      }
+    if(isEpisodePage()){
+      lockPage();
+    }else{
+      document.documentElement.classList.remove('dh-reels-fullscreen');
     }
   },250);
 
-  document.addEventListener('fullscreenchange',function(){
-    if(isEpisodePage()){
-      lockPage();
-    }
-  });
-
-  window.addEventListener('resize',function(){
-    if(isEpisodePage()){
-      lockPage();
-    }
-  });
-
   lockPage();
-
-})();
-
-
-
 
 </script>
 

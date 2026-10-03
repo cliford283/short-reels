@@ -866,7 +866,6 @@ function activateRenderedAds(root=document){
   });
 
   trackVisibleAds();
-    activateRenderedAds(document.getElementById('app'));
 }
 
 /* Automatically activate third-party ad scripts after SPA page renders. */
@@ -2034,6 +2033,8 @@ window.addEventListener('load', function(){
   },250);
 
   lockPage();
+
+})();
 
 </script>
 

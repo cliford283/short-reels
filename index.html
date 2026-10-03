@@ -1681,10 +1681,26 @@ function route() {
   if(v !== 'reels' && v !== 'watch'){
     document.body.classList.remove('lock');
     document.documentElement.classList.remove('dh-reels-fullscreen');
+
     document.body.style.overflow='';
     document.body.style.touchAction='';
     document.documentElement.style.overflow='';
     document.documentElement.style.touchAction='';
+
+    const normalApp=document.getElementById('app');
+    if(normalApp){
+      normalApp.style.position='';
+      normalApp.style.inset='';
+      normalApp.style.width='';
+      normalApp.style.height='';
+      normalApp.style.maxWidth='';
+      normalApp.style.overflow='';
+      normalApp.style.touchAction='';
+    }
+
+    if(document.fullscreenElement && document.exitFullscreen){
+      document.exitFullscreen().catch(()=>{});
+    }
   }
   app.classList.toggle('bare', v === 'reels' || v === 'watch');
   $('#nav').classList.toggle('hide', full);

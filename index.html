@@ -1648,16 +1648,20 @@ function route() {
 window.addEventListener('hashchange', route);
 
 (async function init() {
+  // Render the first screen immediately.
+  route();
+
+  // Load the latest drama list in the background.
   try {
     const r = await fetch('dramas.json', { cache: 'no-cache' });
     if (r.ok) {
       const j = await r.json();
-      if (Array.isArray(j) && j.length) DRAMAS = j;
+      if (Array.isArray(j) && j.length) {
+        DRAMAS = j;
+        route();
+      }
     }
   } catch (e) {}
-
-  // Render immediately. Network sync must not block the first screen.
-  route();
 
   // Refresh public data in the background.
   Promise.allSettled([

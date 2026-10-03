@@ -1697,17 +1697,26 @@ const views = {
      }
 
      if (e.intersectionRatio >= .6) {
+       // Only the currently visible reel may play.
+       root.querySelectorAll('video').forEach(other => {
+         if (other !== v) {
+           other.pause();
+         }
+       });
+
        sp.hidden = false;
        v.muted = false;
        v.volume = 1;
        v.play().catch(() => {});
+     } else {
+       v.pause();
      }
    } else {
      v.pause();
    }
   }), {
    root,
-   rootMargin: '300px 0px',
+   rootMargin: '0px',
    threshold: [0, .6]
   });
   root.querySelectorAll('.reel').forEach(r => {

@@ -212,8 +212,8 @@ svg{display:block}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 /* player */
-.pl{width:min(100vw,56.25dvh);height:min(177.7778vw,100dvh);aspect-ratio:9/16;margin:0 auto;position:relative;background:#000;overflow:hidden}
-.pl video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.pl{width:100%;max-width:100%;height:auto;margin:0 auto;position:relative;background:#000;overflow:hidden}.pl video{display:block;width:100%;height:auto;max-width:100%;object-fit:contain;background:#000}
+.pl video{display:block;width:100%;height:auto;max-width:100%;object-fit:contain;background:#000}
 .ui{position:absolute;inset:0;z-index:50;transition:opacity .25s}
 .ui.off{opacity:0;pointer-events:none}
 .ui.off .pl-top{pointer-events:auto;opacity:1}
@@ -1334,10 +1334,6 @@ const views = {
   };
   $('#bar').onclick = e => { const r = e.currentTarget.getBoundingClientRect(); if (v.duration) v.currentTime = (e.clientX - r.left) / r.width * v.duration; showUI(); };
   v.addEventListener('loadedmetadata', () => {
-    const pl = $('#pl');
-    if (pl && v.videoWidth && v.videoHeight) {
-      pl.style.setProperty('--video-aspect', `${v.videoWidth} / ${v.videoHeight}`);
-    }
     $('#du').textContent = fmt(v.duration);
     const p = prog[d.id]; if (p && p.ep === n && p.t > 3 && p.t < v.duration - 3) v.currentTime = p.t;
   });

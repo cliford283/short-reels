@@ -1927,7 +1927,7 @@ window.addEventListener('load', function(){
       <a class="privacy-link" href="/privacy">Privacy Policy</a>
     </div>
 
-    <button type="button" id="sr-cookie-accept-v2">Accept</button>
+    <button type="button" id="sr-cookie-accept-v2" onclick="try{localStorage.setItem('sr_cookie_consent_v2','1')}catch(e){};document.getElementById('sr-cookie-consent-v2')?.remove()">Accept</button>
   </div>
 </div>
 

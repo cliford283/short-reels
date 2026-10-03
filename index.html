@@ -166,11 +166,17 @@ svg{display:block}
 }
 
 /* ===== Settings ===== */
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav id="nav"></nav>
+<div id="toast"></div>
+<script>
 const IMAGE_DIR = 'images/';                                  // covers: images/<cover>.png|jpg|webp
 const VIDEO_DIR = 'videos/';
 
 let PUBLIC_EPISODES = [];
-
 
 let DH_ADS = null;
 
@@ -518,9 +524,6 @@ async function syncPublicEpisodes() {
   }
 }
 
-</head>
-<body>
-<div id="app"></div>
 
 /* ===== Catalog =====
    Starts with the 10 dramas from the Android app's seed list.
@@ -539,12 +542,7 @@ let DRAMAS = [
 
 /* ===== Helpers ===== */
 const $ = s => document.querySelector(s);
-const app = {
-  set innerHTML(html) {
-    const el = document.getElementById('app');
-    if (el) el.innerHTML = html;
-  }
-};
+const app = $('#app');
 const byId = id => DRAMAS.find(d => d.id === id);
 
 function realEpisodeCount(d) {

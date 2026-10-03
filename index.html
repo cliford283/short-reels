@@ -1652,13 +1652,25 @@ function route() {
 window.addEventListener('hashchange', route);
 
 (async function init() {
-  try { const r = await fetch('dramas.json', { cache: 'no-cache' }); if (r.ok) { const j = await r.json(); if (Array.isArray(j) && j.length) DRAMAS = j; } } catch (e) {}
+  try {
+    const r = await fetch('dramas.json', { cache: 'no-cache' });
+    if (r.ok) {
+      const j = await r.json();
+      if (Array.isArray(j) && j.length) DRAMAS = j;
+    }
+  } catch (e) {}
 
-  await syncPublicDramas();
-  await syncPublicEpisodes();
-  await syncPublicHomepage();
-
+  // Render immediately. Network sync must not block the first screen.
   route();
+
+  // Refresh public data in the background.
+  Promise.allSettled([
+    syncPublicDramas(),
+    syncPublicEpisodes(),
+    syncPublicHomepage()
+  ]).then(() => {
+    route();
+  });
 })();
 </script>
 

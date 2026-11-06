@@ -3553,13 +3553,29 @@ def admin_monetization():
 
 
 AD_ANALYTICS_FILE = DATA_DIR / "ad_analytics.json"
+AD_ANALYTICS_R2_KEY = "data/ad_analytics.json"
 VALID_AD_TYPES = {"home_banner", "drama_banner", "episode_banner"}
 
 def load_ad_analytics():
+    # Vercel functions have a read-only, temporary filesystem. Keep
+    # advertising analytics in R2 so counts survive new function instances.
+    if IS_VERCEL:
+        try:
+            response = r2.get_object(
+                Bucket=R2_BUCKET_NAME,
+                Key=AD_ANALYTICS_R2_KEY
+            )
+            data = json.loads(response["Body"].read().decode("utf-8"))
+            if isinstance(data, dict):
+                data.setdefault("days", {})
+                return data
+        except Exception:
+            pass
+
     if not AD_ANALYTICS_FILE.exists():
         return {"days": {}}
     try:
-        data = json.loads(AD_ANALYTICS_FILE.read_text())
+        data = json.loads(AD_ANALYTICS_FILE.read_text(encoding="utf-8"))
         if not isinstance(data, dict):
             return {"days": {}}
         data.setdefault("days", {})
@@ -3568,9 +3584,24 @@ def load_ad_analytics():
         return {"days": {}}
 
 def save_ad_analytics(data):
+    payload = json.dumps(
+        data,
+        indent=2,
+        ensure_ascii=False
+    ).encode("utf-8")
+
+    if IS_VERCEL:
+        r2.put_object(
+            Bucket=R2_BUCKET_NAME,
+            Key=AD_ANALYTICS_R2_KEY,
+            Body=payload,
+            ContentType="application/json"
+        )
+        return
+
     AD_ANALYTICS_FILE.parent.mkdir(parents=True, exist_ok=True)
     tmp = AD_ANALYTICS_FILE.with_suffix(".tmp")
-    tmp.write_text(json.dumps(data, indent=2))
+    tmp.write_bytes(payload)
     tmp.replace(AD_ANALYTICS_FILE)
 
 @app.route("/api/public/ad-impression", methods=["POST"])

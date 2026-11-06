@@ -85,7 +85,7 @@ app.secret_key = SECRET_KEY
 
 # Session security.
 # HTTPS-only cookies are enabled automatically in production.
-IS_PRODUCTION = os.environ.get("DRAMAHUB_ENV", "").lower() == "production"
+IS_PRODUCTION = IS_VERCEL or os.environ.get("DRAMAHUB_ENV", "").lower() == "production"
 
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
@@ -2415,21 +2415,32 @@ def bulk_create_episodes():
         destination = VIDEOS_DIR / filename
 
         try:
-            # Fast upload: save original video directly.
-            video.save(destination)
+            # Vercel's filesystem is temporary/read-only: persist bulk uploads
+            # directly to R2. Local development keeps the filesystem path.
+            if IS_VERCEL:
+                key = f"videos/{filename}"
+                r2.upload_fileobj(
+                    video,
+                    R2_BUCKET_NAME,
+                    key,
+                    ExtraArgs={
+                        "ContentType": video.content_type or "video/mp4"
+                    }
+                )
+                video_url = f"{R2_PUBLIC_URL}/{key}"
+            else:
+                video.save(destination)
+                video_url = f"/uploads/videos/{filename}"
 
+            now = datetime.now().isoformat(timespec="seconds")
             episode = {
                 "id": uuid.uuid4().hex,
                 "drama_id": drama_id,
                 "number": ep_number,
                 "title": f"Episode {ep_number}",
-                "video": f"/uploads/videos/{filename}",
-                "created_at": datetime.now().isoformat(
-                    timespec="seconds"
-                ),
-                "updated_at": datetime.now().isoformat(
-                    timespec="seconds"
-                )
+                "video": video_url,
+                "created_at": now,
+                "updated_at": now
             }
 
             data["episodes"].append(episode)
@@ -2437,10 +2448,11 @@ def bulk_create_episodes():
 
         except Exception as e:
 
-            try:
-                destination.unlink(missing_ok=True)
-            except Exception:
-                pass
+            if not IS_VERCEL:
+                try:
+                    destination.unlink(missing_ok=True)
+                except Exception:
+                    pass
 
             failed.append({
                 "file": video.filename,
